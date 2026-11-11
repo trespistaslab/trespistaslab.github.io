@@ -27,22 +27,31 @@
   var EQUIPOS = ['#E8E9EC', '#E06010', '#F2C14E', '#5BA8E8'];
 
   /* ------------------------------------------------- geometría del centro
-     Coordenadas en metros, como en la maqueta: x a lo ancho, y en
-     profundidad, z en altura. El centro de la escena está en (0,0). */
+     Son las medidas reales del plano de distribución y de la maqueta 3D:
+     x a lo ancho de la parcela, y en profundidad, z en altura, en metros.
+     'vert' marca las pistas cuyo lado largo va en el eje y. */
   var PISTAS = [
-    { x: -27, y: -14, w: 40, h: 20, azul: true },   // balonmano / fútbol sala
-    { x: -27, y: 10, w: 40, h: 20, azul: true },
-    { x: 19, y: -20, w: 28, h: 15, azul: false },   // baloncesto
-    { x: 19, y: -1, w: 28, h: 15, azul: false },
-    { x: 19, y: 18, w: 28, h: 15, azul: false },
+    // pista 1: balonmano y fútbol sala, 40 x 20, girada 90°
+    { x: 5, y: 50.25, w: 20, h: 40, azul: true, vert: true },
+    // pista 2: balonmano y fútbol sala, 40 x 20, la del graderío
+    { x: 11.5, y: 24.25, w: 40, h: 20, azul: true, vert: false },
+    // pistas 3, 4 y 5: baloncesto, 28 x 15
+    { x: 30.4, y: 46.5, w: 28, h: 15, azul: false, vert: false },
+    { x: 30.4, y: 62.5, w: 28, h: 15, azul: false, vert: false },
+    { x: 30.4, y: 78.5, w: 28, h: 15, azul: false, vert: false },
   ];
+  // los siete mástiles de cámara, en los centros que fija la memoria
   var MASTILES = [
-    [-7, -4], [-7, 20], [17, -12.5], [47, -12.5],
-    [17, 6.5], [47, 6.5], [17, 25.5], [47, 25.5],
+    [15, 60.25], [15, 80.25], [21.5, 34.25], [41.5, 34.25],
+    [44.4, 54], [44.4, 70], [44.4, 86],
   ];
+  var EDIFICIO = { x: 9, y: 5, w: 45, h: 13.5, alt: 4.4 };
+  var GRADA = { x: 11.5, y: 20.6, w: 40, h: 2.4 };          // la de 240 plazas
+  var APARCA = [[62, 41], [72, 41], [95.5, 75.5], [91.5, 90], [62, 90]];
+  var PARCELA = [[0, 0], [0, 100], [93, 100], [99, 76], [58, 12], [55, 0]];
 
   /* ------------------------------------------------------------ cámara */
-  var cam = { giro: -0.62, alt: 0.80, dist: 196, objZ: 2, ox: 9, oy: 5 };
+  var cam = { giro: -0.50, alt: 0.74, dist: 215, objZ: 2, ox: 31, oy: 54 };
   var raton = { x: 0, y: 0, ax: 0, ay: 0 };
   var scroll = 0;
   var W = 0, H = 0, dpr = 1, cx = 0, cy = 0, foco = 1;
@@ -178,39 +187,58 @@
       techo, 'rgba(10,20,40,.22)', 1);
   }
 
+  /* Las marcas de la pista se dibujan en coordenadas locales (u a lo largo,
+     v a lo ancho desde el eje) y se llevan al mundo según esté girada. */
   function pista(p, t) {
-    var b = 1.6;
-    // zócalo de color teja alrededor
-    quad([p.x - b, p.y - b], [p.x + p.w + b, p.y - b],
-      [p.x + p.w + b, p.y + p.h + b], [p.x - b, p.y + p.h + b], C.borde);
-    quad([p.x, p.y], [p.x + p.w, p.y], [p.x + p.w, p.y + p.h], [p.x, p.y + p.h],
-      p.azul ? C.pistaAzul : C.pistaVerde);
+    var b = 1.6, vert = !!p.vert;
+    var largo = vert ? p.h : p.w;
+    var ancho = vert ? p.w : p.h;
+    var ejeU = vert ? p.y : p.x;
+    var ejeV = vert ? p.x + p.w / 2 : p.y + p.h / 2;
+    var M = vert
+      ? function (u, v) { return [ejeV + v, ejeU + u]; }
+      : function (u, v) { return [ejeU + u, ejeV + v]; };
+    var lin = function (pts, col, gr) {
+      linea(pts.map(function (q) { return M(q[0], q[1]); }), col, gr);
+    };
+    var arc = function (cu, cv, r, de, a, col, gr) {
+      var pts = [], n = 24;
+      for (var i = 0; i <= n; i++) {
+        var ang = de + (a - de) * (i / n);
+        pts.push([cu + Math.cos(ang) * r, cv + Math.sin(ang) * r]);
+      }
+      lin(pts, col, gr);
+    };
+
+    // zócalo de color teja alrededor y superficie de la pista
+    quad(M(-b, -ancho / 2 - b), M(largo + b, -ancho / 2 - b),
+      M(largo + b, ancho / 2 + b), M(-b, ancho / 2 + b), C.borde);
+    quad(M(0, -ancho / 2), M(largo, -ancho / 2),
+      M(largo, ancho / 2), M(0, ancho / 2), p.azul ? C.pistaAzul : C.pistaVerde);
 
     var L = C.linea, g = 1.1;
-    var x0 = p.x + 1, y0 = p.y + 1, x1 = p.x + p.w - 1, y1 = p.y + p.h - 1;
-    var mx = (x0 + x1) / 2, my = (y0 + y1) / 2;
-    linea([[x0, y0], [x1, y0], [x1, y1], [x0, y1], [x0, y0]], L, g);
-    linea([[mx, y0], [mx, y1]], L, g);
-    arco(mx, my, p.azul ? 3.2 : 2.4, 0, 6.2832, L, g);
+    var a2 = ancho / 2 - 0.9, u0 = 0.9, u1 = largo - 0.9, um = largo / 2;
+    lin([[u0, -a2], [u1, -a2], [u1, a2], [u0, a2], [u0, -a2]], L, g);
+    lin([[um, -a2], [um, a2]], L, g);
+    arc(um, 0, p.azul ? 3.2 : 1.8, 0, 6.2832, L, g);
     if (p.azul) {
-      arco(x0, my, 6, -1.5708, 1.5708, L, g);
-      arco(x1, my, 6, 1.5708, 4.7124, L, g);
+      // áreas de portería de balonmano, arcos de 6 m
+      arc(u0, 0, 6, -1.5708, 1.5708, L, g);
+      arc(u1, 0, 6, 1.5708, 4.7124, L, g);
     } else {
-      arco(x0 + 1.6, my, 6.75, -1.35, 1.35, L, g);
-      arco(x1 - 1.6, my, 6.75, 1.7916, 4.4916, L, g);
-      linea([[x0, my - 2.45], [x0 + 5.8, my - 2.45], [x0 + 5.8, my + 2.45],
-        [x0, my + 2.45]], L, g);
-      linea([[x1, my - 2.45], [x1 - 5.8, my - 2.45], [x1 - 5.8, my + 2.45],
-        [x1, my + 2.45]], L, g);
+      // zona y triple de baloncesto
+      arc(u0 + 1.575, 0, 6.75, -1.25, 1.25, L, g);
+      arc(u1 - 1.575, 0, 6.75, 1.8916, 4.3916, L, g);
+      lin([[u0, -2.45], [u0 + 5.8, -2.45], [u0 + 5.8, 2.45], [u0, 2.45]], L, g);
+      lin([[u1, -2.45], [u1 - 5.8, -2.45], [u1 - 5.8, 2.45], [u1, 2.45]], L, g);
     }
 
     // barrido del análisis: una franja naranja que recorre la pista
-    var s = (t * 0.17 + p.y * 0.01) % 1.6;
+    var s = (t * 0.17 + p.y * 0.008) % 1.7;
     if (s < 1) {
-      var sxp = x0 + (x1 - x0) * s;
       ctx.save();
       ctx.globalAlpha = 0.5 * Math.sin(s * Math.PI);
-      linea([[sxp, y0], [sxp, y1]], C.naranjaClaro, 2);
+      lin([[u0 + (u1 - u0) * s, -a2], [u0 + (u1 - u0) * s, a2]], C.naranjaClaro, 2);
       ctx.restore();
     }
   }
@@ -306,16 +334,36 @@
   }
 
   /* -------------------------------------------------------------- suelo */
+  function poligono(pts, relleno, trazo, grosor) {
+    ctx.beginPath();
+    for (var i = 0; i < pts.length; i++) {
+      var p = proy(pts[i][0], pts[i][1], 0);
+      if (!p.v) return;
+      if (i === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
+    }
+    ctx.closePath();
+    if (relleno) { ctx.fillStyle = relleno; ctx.fill(); }
+    if (trazo) { ctx.strokeStyle = trazo; ctx.lineWidth = grosor || 1; ctx.stroke(); }
+  }
+
   function suelo() {
-    var R = 120;
-    quad([-R, -R], [R, -R], [R, R], [-R, R], C.sueloB);
+    // el entorno y, encima, la parcela con su forma real
+    var R = 150;
+    quad([34 - R, 50 - R], [34 + R, 50 - R], [34 + R, 50 + R], [34 - R, 50 + R],
+      C.sueloB);
+    poligono(PARCELA, C.sueloA, 'rgba(120,145,190,.20)', 1);
+    poligono(APARCA, '#2c3a52', 'rgba(120,145,190,.22)', 0.8);
+    // marcas del aparcamiento
     ctx.save();
-    ctx.globalAlpha = 0.22;
-    for (var i = -R; i <= R; i += 20) {
-      linea([[i, -R], [i, R]], '#4a5e82', 0.6);
-      linea([[-R, i], [R, i]], '#4a5e82', 0.6);
+    ctx.globalAlpha = 0.5;
+    for (var k = 0; k < 9; k++) {
+      var u = 64 + k * 3.2;
+      linea([[u, 43.5], [u, 48.5]], '#8d9cb6', 0.7);
     }
     ctx.restore();
+    // graderío de la pista 2
+    quad([GRADA.x, GRADA.y], [GRADA.x + GRADA.w, GRADA.y],
+      [GRADA.x + GRADA.w, GRADA.y + GRADA.h], [GRADA.x, GRADA.y + GRADA.h], '#44506b');
   }
 
   /* -------------------------------------------------------------- bucle */
@@ -327,7 +375,7 @@
     var t = (ahora - t0) / 1000;
     raton.ax += (raton.x - raton.ax) * 0.06;
     raton.ay += (raton.y - raton.ay) * 0.06;
-    cam.giro = -0.62 + Math.sin(t * 0.055) * 0.30;
+    cam.giro = -0.50 + Math.sin(t * 0.055) * 0.26;
     prepararCamara();
 
     ctx.clearRect(0, 0, W, H);
@@ -340,7 +388,8 @@
     }).sort(function (a, b) { return b.z - a.z; });
     orden.forEach(function (o) { pista(o.p, t); });
 
-    caja(-30, 36, 46, 13, 4.6, '#e7eaf0', '#49536b');       // edificio
+    caja(EDIFICIO.x, EDIFICIO.y, EDIFICIO.w, EDIFICIO.h, EDIFICIO.alt,
+      '#e7eaf0', '#49536b');
 
     MASTILES.map(function (m) {
       var p = proy(m[0], m[1], 0);
@@ -376,7 +425,8 @@
     ctx.clearRect(0, 0, W, H);
     suelo();
     PISTAS.forEach(function (p) { pista(p, 0); });
-    caja(-30, 36, 46, 13, 4.6, '#e7eaf0', '#49536b');
+    caja(EDIFICIO.x, EDIFICIO.y, EDIFICIO.w, EDIFICIO.h, EDIFICIO.alt,
+      '#e7eaf0', '#49536b');
     MASTILES.forEach(function (m) { mastil(m[0], m[1]); });
     moverJugadores(0);
     jugadores.forEach(jugador);
