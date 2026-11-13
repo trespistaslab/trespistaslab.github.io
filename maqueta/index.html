@@ -5265,6 +5265,49 @@ function buildScene(THREE, op) {
       B('techo', caja(3.2, 0.35, 1.8, matVidrio, x + w / 2 + dx, y + 9.3, zc));
     B('techo', caja(1.6, 1.2, 1.6, M(0xdcd9d1, 0.9), x + w - 4, y + 9, zc));
 
+    /* instalación fotovoltaica de autoconsumo: 65 módulos de 460 W en cinco
+       filas inclinadas 30° hacia el sur, en la banda libre de la cubierta. */
+    (function placas() {
+      const cv = document.createElement('canvas');
+      cv.width = 176; cv.height = 113;
+      const c2 = cv.getContext('2d');
+      c2.fillStyle = '#16213a'; c2.fillRect(0, 0, 176, 113);
+      c2.strokeStyle = '#30456b'; c2.lineWidth = 2;
+      for (let i = 1; i < 10; i++) {
+        c2.beginPath(); c2.moveTo(i * 17.6, 0); c2.lineTo(i * 17.6, 113); c2.stroke();
+      }
+      for (let j = 1; j < 6; j++) {
+        c2.beginPath(); c2.moveTo(0, j * 18.8); c2.lineTo(176, j * 18.8); c2.stroke();
+      }
+      c2.strokeStyle = '#99a2b0'; c2.lineWidth = 5;
+      c2.strokeRect(2.5, 2.5, 171, 108);
+      const matPlaca = new THREE.MeshStandardMaterial({
+        map: textura(cv, 1, 1, 8), roughness: 0.2, metalness: 0.5,
+      });
+      const matPerfil = M(0x97a0aa, 0.45, 0.65);
+      const INC = Math.PI / 6;                       // 30° de inclinación
+      const PW = 1.76, PL = 1.13;                    // módulo de 460 W
+      const prof = PL * Math.cos(INC);               // lo que ocupa en planta
+      const base = zc + 0.18;                        // altura del perfil
+      for (const fv of [6.3, 8.4, 10.5, 12.6, 16.4]) {
+        // perfil continuo que sujeta la fila
+        B('techo', sinSombra(caja(13 * PW + 0.2, 0.08, 0.1, matPerfil,
+          x + 23.84, fv - prof / 2 + 0.06, base)));
+        B('techo', sinSombra(caja(13 * PW + 0.2, 0.08, 0.1, matPerfil,
+          x + 23.84, fv + prof / 2 - 0.06, base + PL * Math.sin(INC))));
+        for (let k = 0; k < 13; k++) {
+          const me = new THREE.Mesh(new THREE.BoxGeometry(PW - 0.03, 0.04, PL), matPlaca);
+          me.rotation.x = INC;
+          me.position.set(x + 12.4 + k * PW + PW / 2, base + PL * Math.sin(INC) / 2, -fv);
+          me.castShadow = true; me.receiveShadow = true;
+          B('techo', me);
+        }
+      }
+      // inversor y cuadro, en el testero este de la cubierta
+      B('techo', caja(0.9, 1.1, 0.4, M(0xd7d9dc, 0.7, 0.2), x + w - 2.2, y + 3.4, zc));
+      B('techo', caja(0.6, 0.8, 0.35, M(0x3d4349, 0.7, 0.3), x + w - 3.4, y + 3.4, zc));
+    })();
+
     // rótulo sobre la fachada sur, con la marca
     const tx = new THREE.CanvasTexture(TEX.rotulo(1600, 200, '#16305c'));
     tx.colorSpace = SRGB; tx.anisotropy = 8;
@@ -6836,6 +6879,15 @@ function buildScene(THREE, op) {
           ['Cuándo', 'Acondicionamiento previsto en el segundo año']],
         interior: true,
         vista: [[52, 24, 12], [48, 0, -11], 44] } },
+    { t: 'Placas solares', p: [32.8, 7.4, -11.4],
+      f: { titulo: 'Fotovoltaica de autoconsumo', sub: '30 kWp sobre la cubierta del edificio',
+        datos: [['Potencia', '30 kWp, 65 módulos de 460 W'],
+          ['Superficie', 'Unos 130 m² de módulo, en cinco filas a 30°'],
+          ['Producción', '49.560 kWh al año (1.652 kWh por kWp en Málaga)'],
+          ['Ahorro', 'Unos 5.650 € al año: la factura baja de 2.200 a 1.730 € al mes'],
+          ['Excedentes', 'Lo que no se consume se vierte a la red y se compensa'],
+          ['Sin baterías', 'Almacenar la tarde costaría más que toda la instalación']],
+        vista: [[46, 20, 26], [32, 5, -11], 40] } },
     { t: 'Aparcamiento', p: [76, 4.4, -66],
       f: { titulo: 'Aparcamiento', sub: 'Existente, dentro de la parcela',
         datos: [['Situación', 'Lado este de la parcela'], ['Estado', 'Se conserva el actual'],
