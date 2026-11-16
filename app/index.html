@@ -954,7 +954,7 @@ var PERFILES = {
   };
 
   P.pagos = function () {
-    return tit('Pagos', 'Cuota de la app para familias · 12 €/mes') +
+    return tit('Pagos', 'Cuota de la app para familias · 20 €/mes') +
       ESTADO.facturas.map(function (f) {
         return fila({ tit: f.con, meta: f.id, icono: 'doc', der: pill(f.est, 'ok') });
       }).join('') +
