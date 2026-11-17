@@ -216,6 +216,8 @@ button.fila:active{transform:scale(.985)}
 .barras .b u{text-decoration:none;display:flex;justify-content:space-between;
   font:600 11.5px/1 var(--f-mono);color:var(--scr-soft)}
 
+.calor{display:block;width:100%;height:auto;border-radius:10px}
+a.btn{text-decoration:none}
 .cifras{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .cifra{background:var(--scr-2);border-radius:12px;padding:10px 8px;text-align:center}
 .cifra b{display:block;font:800 20px/1 var(--f-display);font-variant-numeric:tabular-nums}
@@ -657,6 +659,10 @@ var ESTADO = {
       dur: '58 min', estado: 'etiquetando' }
   ],
   reservas: {},            // 'dia-hora' -> true cuando el entrenador la coge
+  saldo: 15,               // euros: lo que dejó la tarjeta «Trae a un compañero»
+  regalo: false,           // ya se canjeó la tarjeta regalo de la demostración
+  alquileres: [],          // pistas sueltas reservadas desde la app
+  alq: { dia: 'Sáb 15', hora: '10:00', pista: 'Pista 2', graba: true },
   avisos: [
     { t: 'Dos clips nuevos de la sesión del martes', m: 'hace 2 h', leido: false },
     { t: 'Lucía ha comentado tu ficha de la semana', m: 'ayer', leido: false },
@@ -681,8 +687,8 @@ var PERFILES = {
     texto: 'Ve sus clips comentados, cómo va su temporada y cuándo entrena. Nada más: no '
          + 'tiene acceso a los vídeos de otros equipos ni puede escribir a nadie.',
     puede: ['Ver los clips en los que aparece, con el comentario del entrenador',
-            'Seguir su ficha de la temporada',
-            'Consultar los próximos entrenamientos'],
+            'Seguir su ficha de la temporada: clips, asistencia, distancia y mapa de calor',
+            'Consultar los próximos entrenamientos y alquilar una pista suelta'],
     tabs: [['inicio', 'Inicio', 'casa'], ['clips', 'Clips', 'play'],
            ['ficha', 'Mi ficha', 'grafico'], ['agenda', 'Agenda', 'cal']]
   },
@@ -693,7 +699,7 @@ var PERFILES = {
          + 'retira, los clips de Marcos dejan de verse al instante, también para el club.',
     puede: ['Ver los vídeos de su hijo y el comentario del técnico',
             'Dar o retirar el consentimiento de imagen cuando quiera',
-            'Consultar los pagos y las facturas'],
+            'Consultar los pagos, el saldo y canjear una tarjeta regalo'],
     tabs: [['inicio', 'Inicio', 'casa'], ['clips', 'Clips', 'play'],
            ['permisos', 'Permisos', 'llave'], ['pagos', 'Pagos', 'euro']]
   },
@@ -866,7 +872,9 @@ var PERFILES = {
         '<div style="display:flex;align-items:baseline;gap:8px">' +
         '<b style="font:800 23px/1 var(--f-display)">Jueves 13</b>' +
         '<span class="sub">18:00 · Pista 1</span></div>' +
-        '<span class="sub">Cadete masculino · con grabación</span>') +
+        '<span class="sub">Cadete masculino · con grabación</span>' +
+        '<a class="btn sec ancho" href="../maqueta/#apie" target="_blank" rel="noopener">' +
+        ic('casa') + 'Ver la pista en 3D</a>') +
       caja('<span class="rot">Tu vídeo</span>' +
         '<div style="display:flex;align-items:center;gap:12px">' +
         '<b style="font:800 30px/1 var(--f-display)" data-num="' + nuevos + '">0</b>' +
@@ -899,6 +907,13 @@ var PERFILES = {
   P.ficha = function () {
     return tit('Mi ficha', 'Temporada 2026/27 · 11 sesiones grabadas') +
       caja(cifras([[11, 'sesiones', ''], [9, 'clips tuyos', ''], [82, 'asistencia', '%']])) +
+      caja('<span class="rot">Lo que miden las cámaras</span>' +
+        '<div class="cifras">' + [['3,4', 'km por sesión'], ['24,6', 'km/h de punta'],
+          ['18', 'esprints']].map(function (c) {
+          return '<div class="cifra"><b>' + c[0] + '</b><span>' + c[1] + '</span></div>';
+        }).join('') + '</div>' + mapaCalor() +
+        '<p class="sub">Dónde has jugado en las tres últimas sesiones. Sale del seguimiento '
+        + 'automático del vídeo: sin sensores ni chalecos.</p>') +
       caja('<span class="rot">Lo que más se te marca</span>' +
         barras([['Repliegue defensivo', 74, '74 %'],
                 ['Contragolpe', 61, '61 %'],
@@ -916,6 +931,12 @@ var PERFILES = {
       ['Viernes 14', '19:30 · Pista 2', 'Partido · con grabación'],
       ['Sábado 15', 'Libre', '']];
     return tit('Agenda', 'Lo que tienes esta semana.') +
+      ESTADO.alquileres.map(function (q) {
+        return fila({ tit: q.dia + ' · ' + q.hora, meta: q.pista + ' · alquiler',
+          icono: q.graba ? 'play' : 'cal', der: pill(q.graba ? 'graba' : 'reservada', 'ok') });
+      }).join('') +
+      '<button class="btn ancho" type="button" data-ir="alquilar">' + ic('cal') +
+      'Alquilar una pista</button>' +
       dias.map(function (d) {
         return fila({ tit: d[0], meta: d[1], icono: d[2] ? 'play' : 'cal',
           color: d[2] ? '' : 'var(--scr-soft)',
@@ -958,6 +979,20 @@ var PERFILES = {
       ESTADO.facturas.map(function (f) {
         return fila({ tit: f.con, meta: f.id, icono: 'doc', der: pill(f.est, 'ok') });
       }).join('') +
+      caja('<span class="rot">Saldo y regalos</span>' +
+        '<div style="display:flex;align-items:baseline;gap:8px">' +
+        '<b style="font:800 26px/1 var(--f-display);white-space:nowrap">' + ESTADO.saldo + ' €</b>' +
+        '<span class="sub">de saldo para alquileres y sesiones</span></div>' +
+        '<p class="sub">' + (ESTADO.regalo
+          ? 'Incluye la tarjeta regalo de 50 € que acabas de canjear.'
+          : 'Son los 15 € de la tarjeta «Trae a un compañero».') + '</p>' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+        '<button class="btn sec" type="button" data-regalo' + (ESTADO.regalo ? ' disabled' : '') +
+        '>' + ic('doc') + 'Canjear tarjeta regalo</button>' +
+        '<button class="btn sec" type="button" data-invitar>' + ic('grupo') +
+        'Invitar a un compañero</button></div>') +
+      '<button class="btn ancho" type="button" data-ir="alquilar">' + ic('cal') +
+      'Alquilar una pista</button>' +
       caja('<span class="rot">Forma de pago</span>' +
         '<p class="sub">Domiciliado el día 1 de cada mes. Maqueta: aquí no se cobra nada.</p>');
   };
@@ -1082,6 +1117,65 @@ var PERFILES = {
         color: a.leido ? 'var(--scr-soft)' : '',
         der: a.leido ? '' : pill('nuevo', 'acc') });
     }).join('');
+  };
+
+  /* Mapa de calor de un lateral izquierdo: una pista de 40 x 20 con manchas. */
+  function mapaCalor() {
+    var manchas = [[58, 30, 26, .85], [44, 22, 20, .7], [72, 40, 22, .75], [36, 50, 18, .5],
+      [96, 34, 20, .45], [130, 28, 22, .6], [150, 40, 18, .55], [116, 62, 14, .3]];
+    return '<svg class="calor" viewBox="0 0 200 100" role="img" aria-label="Mapa de calor: ' +
+      'más presencia en el lateral izquierdo, entre los 9 metros propios y el centro">' +
+      '<defs><radialGradient id="mc"><stop offset="0" stop-color="#FF7A1A"/>' +
+      '<stop offset="1" stop-color="#FF7A1A" stop-opacity="0"/></radialGradient></defs>' +
+      '<rect width="200" height="100" rx="5" fill="#2F6FC0"/>' +
+      '<g fill="none" stroke="#fff" stroke-width="1" opacity=".85">' +
+      '<rect x="4" y="4" width="192" height="92"/><path d="M100 4v92"/>' +
+      '<path d="M4 20a30 30 0 010 60M196 20a30 30 0 000 60"/>' +
+      '<path d="M4 8a42 42 0 010 84M196 8a42 42 0 000 84" stroke-dasharray="3 3"/></g>' +
+      manchas.map(function (m) {
+        return '<circle cx="' + m[0] + '" cy="' + m[1] + '" r="' + m[2] +
+          '" fill="url(#mc)" opacity="' + m[3] + '"/>';
+      }).join('') + '</svg>';
+  }
+
+  /* Alquiler suelto: las tarifas son las del apartado 4.8.2 de la memoria. */
+  var ALQ_DIAS = ['Jue 13', 'Vie 14', 'Sáb 15', 'Lun 17', 'Mar 18'];
+  var ALQ_HORAS = ['9:00', '10:00', '11:00', '12:00', '13:00', '16:00', '17:00', '20:00', '21:00'];
+  var ALQ_PISTAS = ['Pista 1', 'Pista 2', 'Pista 3', 'Pista 4', 'Pista 5'];
+  function precioAlquiler() { return ESTADO.alq.graba ? 60 : 30; }
+  function resumenAlquiler() {
+    var q = ESTADO.alq, p = precioAlquiler(), usa = Math.min(ESTADO.saldo, p);
+    var dep = q.pista === 'Pista 1' || q.pista === 'Pista 2' ? 'balonmano o fútbol sala'
+      : 'baloncesto';
+    return '<span class="rot">Tu reserva</span>' +
+      '<div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px">' +
+      '<b style="font:800 17px/1.2 var(--f-display)">' + esc(q.dia + ' · ' + q.hora) + '</b>' +
+      '<b style="font:800 26px/1 var(--f-display);color:var(--accent)">' + p + ' €</b></div>' +
+      '<span class="sub">' + esc(q.pista) + ' · ' + dep + ' · 1 hora' +
+      (q.graba ? ' · con las cámaras y los clips en la app' : ' · sin grabación') + '</span>' +
+      (usa ? '<p class="sub" style="border-top:1px solid var(--scr-line);padding-top:9px">' +
+        'Se descuentan <b>' + usa + ' €</b> de tu saldo. A pagar: <b>' + (p - usa) + ' €</b>.</p>'
+        : '');
+  }
+  P.alquilar = function () {
+    var q = ESTADO.alq;
+    var grupo = function (rot, clave, lista) {
+      return '<div class="campo"><label>' + rot + '</label><div class="opciones" data-f="alq-' +
+        clave + '">' + lista.map(function (v) {
+          return '<button type="button" data-op="' + esc(v) + '" aria-pressed="' +
+            (q[clave] === v) + '">' + esc(v) + '</button>';
+        }).join('') + '</div></div>';
+    };
+    return tit('Alquilar una pista', '30 € la hora, o 60 € con grabación. De 9 a 14 y de 16 a 22.') +
+      caja(grupo('Día', 'dia', ALQ_DIAS) + grupo('Hora', 'hora', ALQ_HORAS) +
+        grupo('Pista', 'pista', ALQ_PISTAS) +
+        '<button class="sw" type="button" data-alqgraba aria-pressed="' + q.graba + '">' +
+        '<span class="lab"><b>Con grabación</b><span>Las dos cámaras de la pista y los clips '
+        + 'en la app esa misma tarde</span></span><span class="caja-sw"></span></button>', 'aire') +
+      '<div class="caja" id="alqResumen">' + resumenAlquiler() + '</div>' +
+      '<button class="btn ancho" type="button" data-alqok>' + ic('ok') +
+      'Confirmar la reserva</button>' +
+      '<p class="sub" style="text-align:center">Maqueta: no se cobra ni se reserva nada.</p>';
   };
 
   /* ------------------------------------------------------- pantallas hijas */
@@ -1418,6 +1512,39 @@ var PERFILES = {
       } else {
         b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true'));
       }
+      var clave = grupo ? grupo.getAttribute('data-f') : '';
+      if (clave.indexOf('alq-') === 0) {
+        ESTADO.alq[clave.slice(4)] = b.getAttribute('data-op');
+        document.getElementById('alqResumen').innerHTML = resumenAlquiler();
+      }
+      return;
+    }
+    if ((b = e.target.closest('[data-alqgraba]'))) {
+      ESTADO.alq.graba = !ESTADO.alq.graba;
+      b.setAttribute('aria-pressed', String(ESTADO.alq.graba));
+      document.getElementById('alqResumen').innerHTML = resumenAlquiler();
+      return;
+    }
+    if ((b = e.target.closest('[data-alqok]'))) {
+      var q = ESTADO.alq, usa = Math.min(ESTADO.saldo, precioAlquiler());
+      ESTADO.alquileres.unshift({ dia: q.dia, hora: q.hora, pista: q.pista, graba: q.graba });
+      ESTADO.saldo -= usa;
+      ESTADO.avisos.unshift({ t: 'Reserva confirmada: ' + q.pista + ', ' + q.dia + ' a las ' +
+        q.hora, m: 'ahora', leido: false });
+      puntoAviso.hidden = false;
+      brindis('Pista reservada' + (usa ? ', con ' + usa + ' € de tu saldo.' : '.') +
+        (ESTADO.perfil === 'jugador' ? ' Ya está en tu agenda.' : ''));
+      volver();
+      return;
+    }
+    if ((b = e.target.closest('[data-regalo]'))) {
+      ESTADO.regalo = true; ESTADO.saldo += 50;
+      brindis('Tarjeta regalo de 50 € canjeada. No caduca.');
+      pintar('tab');
+      return;
+    }
+    if ((b = e.target.closest('[data-invitar]'))) {
+      brindis('Tu código es RIVAS-15: 15 € para ti y 20 % en su primera cuota.');
       return;
     }
     if ((b = e.target.closest('[data-crear]'))) { crearClip(); return; }

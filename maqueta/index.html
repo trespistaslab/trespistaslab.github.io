@@ -287,6 +287,99 @@ img{max-width:100%}
   @keyframes carga { from { transform: translateX(-20%); } to { transform: translateX(170%); } }
   @media (prefers-reduced-motion: reduce) { #cargando .barra::after { animation: none; width: 100%; } }
 
+
+  /* ---------- a pie: primera persona ---------- */
+  #apie { position: fixed; inset: 0; z-index: 2; pointer-events: none; }
+  #apie .mira {
+    position: absolute; left: 50%; top: 50%; width: 18px; height: 18px;
+    margin: -9px 0 0 -9px; border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, .92); box-shadow: 0 0 0 1px rgba(0, 0, 0, .35);
+  }
+  #apie .mira::after {
+    content: ""; position: absolute; left: 50%; top: 50%; width: 3px; height: 3px;
+    margin: -1.5px 0 0 -1.5px; border-radius: 50%; background: #fff;
+  }
+  #apie .fuerza {
+    position: absolute; left: 50%; top: calc(50% + 24px); width: 92px; height: 6px;
+    margin-left: -46px; border-radius: 4px; background: rgba(10, 18, 36, .55);
+    overflow: hidden; opacity: 0; transition: opacity .12s;
+  }
+  #apie.cargando .fuerza { opacity: 1; }
+  #pieFuerza { display: block; width: 100%; height: 100%; background: #F0792B;
+    transform: scaleX(0); transform-origin: left center; }
+  #apie .donde {
+    position: absolute; left: max(16px, env(safe-area-inset-left, 0px));
+    top: calc(var(--cab, 80px) + 4px); padding: 8px 13px 9px; max-width: 230px;
+  }
+  #apie .donde span { display: block; font-family: var(--f-mono); font-size: 9.5px;
+    letter-spacing: .1em; text-transform: uppercase; color: var(--tinta-suave); }
+  #pieZona { display: block; font-family: var(--f-display); font-weight: 800; font-size: 15.5px;
+    letter-spacing: -.01em; line-height: 1.15; }
+  #pieTanteo { display: block; margin-top: 4px; font-family: var(--f-mono); font-size: 11px;
+    color: var(--acento); font-weight: 600; }
+  #mini {
+    position: absolute; right: max(16px, env(safe-area-inset-right, 0px));
+    top: calc(var(--cab, 80px) + 4px); width: 132px; height: 132px; border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, .5); box-shadow: 0 8px 26px rgba(0, 0, 0, .3);
+  }
+  #aviso {
+    position: absolute; left: 50%; top: 31%; transform: translateX(-50%);
+    font-family: var(--f-display); font-weight: 800; font-size: clamp(30px, 6vw, 54px);
+    letter-spacing: -.02em; color: #fff; text-shadow: 0 3px 18px rgba(0, 0, 0, .55);
+    white-space: nowrap; animation: aviso .5s cubic-bezier(.2, 1.5, .4, 1);
+  }
+  @keyframes aviso { from { transform: translateX(-50%) scale(.6); opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { #aviso { animation: none; } }
+  #joy, #bLanzar { display: none; pointer-events: auto; touch-action: none; }
+  #joy {
+    position: absolute; left: max(18px, env(safe-area-inset-left, 0px));
+    bottom: calc(var(--pie, 110px) + 12px); width: 112px; height: 112px; border-radius: 50%;
+    background: rgba(13, 25, 50, .34); border: 1.5px solid rgba(255, 255, 255, .55);
+  }
+  #joy i { position: absolute; left: 50%; top: 50%; width: 46px; height: 46px;
+    margin: -23px 0 0 -23px; border-radius: 50%; background: rgba(255, 255, 255, .9);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, .3); }
+  #bLanzar {
+    position: absolute; right: max(18px, env(safe-area-inset-right, 0px));
+    bottom: calc(var(--pie, 110px) + 22px); width: 84px; height: 84px; padding: 0;
+    border-radius: 50%; background: var(--acento); border-color: #fff; color: #fff;
+    font-size: 13px; align-items: center; justify-content: center;
+  }
+  @media (pointer: coarse) { #joy { display: block; } #bLanzar { display: flex; } }
+  body.apie #vistas, body.apie #filaOps, body.apie #filaCam, body.apie #filaSeg,
+  body.apie #subt { display: none; }
+  body.apie #lienzo { cursor: crosshair; }
+  body.raton #apie .donde, body.raton #mini { opacity: .92; }
+  #pieLugares { display: flex; gap: 6px; }
+  body.apie #ficha { top: calc(var(--cab, 80px) + 78px); }
+  body.pov #jug { display: none; }
+  #ficha { z-index: 5; }
+
+  /* ---------- análisis de un jugador ---------- */
+  #jug {
+    position: fixed; z-index: 4; right: max(16px, env(safe-area-inset-right, 0px));
+    top: calc(var(--cab, 80px) + 4px); width: min(258px, calc(100vw - 32px));
+    padding: 13px 15px 12px;
+  }
+  #jug .cabz { display: flex; align-items: center; gap: 9px; padding-right: 26px; }
+  #jugColor { flex: 0 0 12px; height: 12px; border-radius: 50%; }
+  #jugNombre { font-family: var(--f-display); font-weight: 800; font-size: 16px; }
+  #jugPista { display: block; font-size: 11.5px; color: var(--tinta-suave); margin: 1px 0 9px 21px; }
+  #jug dl { margin: 0; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+  #jug dl div { background: var(--chip); border-radius: 9px; padding: 7px 8px 6px; min-width: 0; }
+  #jug dt { font-family: var(--f-mono); font-size: 8.5px; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--tinta-suave); }
+  #jug dd { margin: 2px 0 0; font-family: var(--f-display); font-weight: 800; font-size: 18px;
+    font-variant-numeric: tabular-nums; line-height: 1.1; }
+  #jug dd small { font-family: var(--f-texto); font-weight: 500; font-size: 10px;
+    color: var(--tinta-suave); margin-left: 2px; }
+  #jug p { margin: 9px 0 0; font-size: 11.5px; line-height: 1.4; color: var(--tinta-suave); }
+  #jugCerrar {
+    position: absolute; top: 9px; right: 9px; width: 26px; height: 26px; padding: 0;
+    border-radius: 50%; box-shadow: none; background: var(--chip); border-color: transparent;
+    font-size: 15px; line-height: 1;
+  }
+
   /* ---------- subtítulo del recorrido ---------- */
   #subt {
     align-self: center; max-width: min(560px, 100%); padding: 11px 16px 10px;
@@ -361,6 +454,11 @@ img{max-width:100%}
     #subTit { font-size: 14.5px; }
     #subTxt { font-size: 12.5px; }
     #ayuda .teclas { display: none; }
+    #mini { width: 92px; height: 92px; border-radius: 11px; }
+    #apie .donde { max-width: calc(100vw - 140px); }
+    #jug { top: auto; bottom: calc(var(--pie, 110px) + 8px); right: auto;
+      left: max(16px, env(safe-area-inset-left, 0px)); }
+    #jug p { display: none; }
     #ficha { top: auto; bottom: calc(var(--pie, 130px) + 6px); left: 16px; right: 16px;
       width: auto; max-height: 40vh; overflow-y: auto; padding: 11px 13px 10px; }
     #ficha h2 { font-size: 16px; }
@@ -415,6 +513,33 @@ img{max-width:100%}
   </div>
 </header>
 
+<div id="apie" hidden>
+  <div class="mira" aria-hidden="true"></div>
+  <div class="fuerza" aria-hidden="true"><i id="pieFuerza"></i></div>
+  <div class="donde caja">
+    <span>Estás en</span>
+    <b id="pieZona" aria-live="polite"></b>
+    <i id="pieTanteo" hidden></i>
+  </div>
+  <canvas id="mini" width="8" height="8" aria-hidden="true"></canvas>
+  <div id="aviso" role="status" aria-live="polite" hidden></div>
+  <div id="joy" aria-hidden="true"><i></i></div>
+  <button id="bLanzar" type="button" aria-label="Lanzar el balón: mantén pulsado para dar más fuerza">Lanzar</button>
+</div>
+
+<aside id="jug" class="caja" hidden>
+  <button id="jugCerrar" type="button" aria-label="Dejar de seguir al jugador">×</button>
+  <div class="cabz"><span id="jugColor"></span><b id="jugNombre"></b></div>
+  <span id="jugPista"></span>
+  <dl>
+    <div><dt>Velocidad</dt><dd><span id="jugVel">0,0</span><small>km/h</small></dd></div>
+    <div><dt>Máxima</dt><dd><span id="jugMax">0,0</span><small>km/h</small></dd></div>
+    <div><dt>Distancia</dt><dd><span id="jugDist">0</span><small>m</small></dd></div>
+  </dl>
+  <p>Seguimiento automático: las cámaras sacan estos datos del vídeo, sin sensores ni
+    chalecos. El rastro naranja es su recorrido.</p>
+</aside>
+
 <aside id="ficha" class="caja" hidden>
   <button id="fCerrar" type="button" aria-label="Cerrar la ficha">×</button>
   <h2 id="fTitulo"></h2>
@@ -448,9 +573,19 @@ img{max-width:100%}
     <span class="rot">Ver desde la cámara</span>
     <div id="listaCam"></div>
   </div>
+  <div class="fila" id="filaPie" hidden>
+    <button id="pieSalir" type="button">‹ Volver a la maqueta</button>
+    <span class="rot">Ir a</span>
+    <div id="pieLugares"></div>
+    <button id="bReto" type="button" title="Cuántas canastas y goles metes en un minuto">Reto de 60 s</button>
+    <button id="bSon" type="button" class="on" aria-pressed="true">Sonido</button>
+    <span class="pista">W A S D para andar · ratón para mirar · clic o espacio para lanzar ·
+      E abre la ficha · Esc para salir</span>
+  </div>
   <div class="fila" id="vistas"></div>
-  <div class="fila">
+  <div class="fila" id="filaOps">
     <button id="bRuta" type="button" aria-pressed="false">▶ Recorrido</button>
+    <button id="bPie" type="button" aria-pressed="false" title="Recorre la instalación en primera persona (tecla V)">A pie</button>
     <button id="bEtq" type="button" aria-pressed="false">Fichas</button>
     <button id="bCota" type="button" aria-pressed="false">Cotas</button>
     <button id="bCam" type="button" aria-pressed="false">Cámaras</button>
@@ -460,8 +595,8 @@ img{max-width:100%}
     <button id="bCal" type="button" aria-pressed="false" title="Dibuja siempre a la máxima resolución, aunque vaya menos fluido">Nitidez máxima</button>
     <button id="bPant" type="button" aria-label="Pantalla completa" title="Pantalla completa">⛶</button>
     <button id="bAyuda" type="button" aria-label="Ayuda y atajos" aria-expanded="false" title="Ayuda y atajos de teclado">?</button>
-    <span class="pista">Arrastra para girar · rueda o pellizco para acercar ·
-      mayúsculas + arrastrar para desplazar</span>
+    <span class="pista">Arrastra para girar · rueda o pellizco para acercar · pulsa sobre un
+      jugador para analizarlo · dos pulsaciones en el suelo para bajar a pie</span>
   </div>
 </div>
 
@@ -480,6 +615,12 @@ img{max-width:100%}
     <h3>Qué enseña cada botón</h3>
     <dl>
       <dt>Recorrido</dt><dd>Visita guiada por toda la instalación, con subtítulos.</dd>
+      <dt>A pie</dt><dd>Primera persona: se anda por las pistas, se entra en el edificio y se
+        lanza a portería o a canasta, con marcador, reto de un minuto y sonido. Los televisores
+        de la sala de análisis enseñan en directo lo que graban las cámaras. Dos pulsaciones
+        seguidas en el suelo bajan justo ahí.</dd>
+      <dt>Un jugador</dt><dd>Al pulsar sobre cualquiera, la cámara lo sigue y enseña su
+        velocidad, su distancia recorrida y su rastro.</dd>
       <dt>Fichas</dt><dd>Rótulos sobre cada zona; al pulsarlos se abren sus datos.</dd>
       <dt>Cotas</dt><dd>Medidas de las pistas, del edificio y de la parcela, y nombres de las calles.</dd>
       <dt>Cámaras</dt><dd>Qué mitad de pista cubre cada cámara, y la vista desde cualquiera de las diez.</dd>
@@ -492,6 +633,9 @@ img{max-width:100%}
       <dl>
         <dt><kbd>1</kbd>–<kbd>6</kbd></dt><dd>Vistas predefinidas.</dd>
         <dt><kbd>R</kbd></dt><dd>Recorrido guiado.</dd>
+        <dt><kbd>V</kbd></dt><dd>Entra y sale del modo a pie. Dentro: <kbd>W</kbd> <kbd>A</kbd>
+          <kbd>S</kbd> <kbd>D</kbd> para andar, mayúsculas para correr, espacio para lanzar
+          y <kbd>E</kbd> para abrir la ficha de lo que tienes delante.</dd>
         <dt><kbd>F</kbd> <kbd>M</kbd> <kbd>C</kbd></dt><dd>Fichas, medidas y cámaras.</dd>
         <dt><kbd>I</kbd> <kbd>E</kbd></dt><dd>Interior y evacuación.</dd>
         <dt><kbd>N</kbd></dt><dd>Cambia entre el día y la noche.</dd>
@@ -4812,7 +4956,22 @@ function buildScene(THREE, op) {
   /* Piezas que se muestran u ocultan en bloque: la cubierta y el cuerpo macizo del
      edificio se cambian por su interior cuando se levanta el techo. */
   const bloques = { techo: new THREE.Group(), cuerpo: new THREE.Group(),
-    interior: new THREE.Group() };
+    interior: new THREE.Group(), friso: new THREE.Group() };
+  /* Obstáculos para el paseo a pie: cada uno es un segmento en planta con su
+     medio grueso y la altura hasta la que cierra el paso. */
+  const COL = [];
+  const tele = { mat: null };      // los televisores de la sala de análisis
+  const col = (a, b, r, h) => COL.push({ ax: a[0], ay: a[1], bx: b[0], by: b[1], r, h });
+  function colRect(x0, y0, x1, y1, h) {
+    const w = x1 - x0, d = y1 - y0;
+    if (Math.min(w, d) <= 0.7) {                // un muro: basta su eje
+      if (w >= d) col([x0 + d / 2, (y0 + y1) / 2], [x1 - d / 2, (y0 + y1) / 2], d / 2, h);
+      else col([(x0 + x1) / 2, y0 + w / 2], [(x0 + x1) / 2, y1 - w / 2], w / 2, h);
+    } else {                                    // un volumen: su contorno
+      col([x0, y0], [x1, y0], 0.08, h); col([x1, y0], [x1, y1], 0.08, h);
+      col([x1, y1], [x0, y1], 0.08, h); col([x0, y1], [x0, y0], 0.08, h);
+    }
+  }
   const B = (b, o) => { o.userData.bloque = b; return add(o); };
   const SRGB = THREE.SRGBColorSpace;
 
@@ -4986,6 +5145,7 @@ function buildScene(THREE, op) {
   const CUBIERTAS = [0x7a766f, 0x8b8479, 0x6d7276, 0x98897a, 0x847f78];
   function manzana(x, y, w, d, alt, lejos) {
     alt = Math.round(alt / 3) * 3;
+    colRect(x, y, x + w, y + d, alt);
     const cx = x + w / 2, cy = y + d / 2;
     const b = caja(w, alt, d, matFachada, cx, cy, -0.1);
     const uv = b.geometry.attributes.uv;
@@ -5240,6 +5400,7 @@ function buildScene(THREE, op) {
     baranda(frente[0], frente[1], 0.95, 0.12 + 0.45);
   }
   GRADAS.forEach(grada);
+  for (const g of GRADAS) colRect(g.x, g.y, g.x + g.w, g.y + g.d, 2.6);
 
   // asiento = banqueta + respaldo, en los dos colores corporativos
   const geoAs = new THREE.BoxGeometry(0.44, 0.09, 0.40);
@@ -5324,8 +5485,14 @@ function buildScene(THREE, op) {
   banquillo(39.5, 45.6, 5.4, 0);
   mesa(31.5, 45.6, 0);
 
-  function marcador(x, y, mira, alto, canvas) {
+  const marcadores = [];
+  function marcador(x, y, mira, alto, canvas, a, b, reloj) {
     const t = new THREE.CanvasTexture(canvas);
+    marcadores.push({ a, b, poner(na, nb) {
+      this.a = na; this.b = nb;
+      t.image = TEX.marcador('LOCAL', 'VISIT.', na, nb, reloj);
+      t.needsUpdate = true;
+    } });
     t.colorSpace = SRGB; t.anisotropy = 4;
     const mat = new THREE.MeshStandardMaterial({
       map: t, emissiveMap: t, emissive: 0xffffff, emissiveIntensity: 0.55, roughness: 0.5,
@@ -5347,8 +5514,8 @@ function buildScene(THREE, op) {
     g.rotation.y = mira;
     add(g);
   }
-  marcador(2.35, 70.25, Math.PI / 2, 4.6, TEX.marcador('LOCAL', 'VISIT.', 24, 21, '18:42'));
-  marcador(55.2, 46.25, 0, 5.6, TEX.marcador('LOCAL', 'VISIT.', 3, 2, '31:07'));
+  marcador(2.35, 70.25, Math.PI / 2, 4.6, TEX.marcador('LOCAL', 'VISIT.', 24, 21, '18:42'), 24, 21, '18:42');
+  marcador(55.2, 46.25, 0, 5.6, TEX.marcador('LOCAL', 'VISIT.', 3, 2, '31:07'), 3, 2, '31:07');
 
   /* ------------------------------------------------------------- edificio */
   const matVidrio = new THREE.MeshStandardMaterial({
@@ -5407,13 +5574,14 @@ function buildScene(THREE, op) {
     add(caja(8.7, 0.1, 3.5, M(0x3d4349, 0.7), ex, y - 1.7, 3.42));
     for (const dx of [-4.0, 4.0])
       add(caja(0.16, 3.2, 0.16, M(0x3d4349, 0.7), ex + dx, y - 3.2, 0.12));
-    add(caja(4.6, 2.7, 0.12, matVidrio, ex, y - 0.07, 0.14));
+    // las hojas van con el cuerpo macizo: a pie y con el interior a la vista, el paso queda abierto
+    B('cuerpo', caja(4.6, 2.7, 0.12, matVidrio, ex, y - 0.07, 0.14));
     for (const dx of [-2.3, -1.15, 0, 1.15, 2.3])
-      add(caja(0.07, 2.8, 0.18, marco, ex + dx, y - 0.08, 0.14));
-    add(caja(4.7, 0.08, 0.18, marco, ex, y - 0.08, 2.84));
+      B('cuerpo', caja(0.07, 2.8, 0.18, marco, ex + dx, y - 0.08, 0.14));
+    B('cuerpo', caja(4.7, 0.08, 0.18, marco, ex, y - 0.08, 2.84));
     // felpudo de la entrada y puerta de servicio hacia las pistas
     sinSombra(add(caja(4.4, 0.02, 1.6, M(0x2a3038, 0.95), ex, y - 1.1, 0.14)));
-    add(caja(2.4, 2.3, 0.12, matVidrio, x + 6, y + h + 0.07, 0.14));
+    B('cuerpo', caja(2.4, 2.3, 0.12, matVidrio, x + 6, y + h + 0.07, 0.14));
     add(caja(3.4, 0.14, 1.6, M(NAR, 0.8), x + 6, y + h + 0.8, 2.6));
 
     // equipos y lucernarios en cubierta
@@ -5513,6 +5681,9 @@ function buildScene(THREE, op) {
       const matPantalla = new THREE.MeshStandardMaterial({
         color: 0x12233f, emissive: 0x3f8fe0, emissiveIntensity: 0.75, roughness: 0.3,
       });
+      // los dos televisores enseñan en directo lo que graba una cámara de pista
+      const matTele = new THREE.MeshBasicMaterial({ color: 0x24406b });
+      tele.mat = matTele;
       const matLed = new THREE.MeshStandardMaterial({
         color: 0x0c2a17, emissive: 0x3dff8a, emissiveIntensity: 1.2, roughness: 0.4,
       });
@@ -5520,6 +5691,7 @@ function buildScene(THREE, op) {
       const tapa = (u0, v0, u1, v1, alto) =>
         sinSombra(box(u0 - 0.01, v0 - 0.01, u1 + 0.01, v1 + 0.01, 0.12 + alto, 0.15 + alto, mCorte));
       function muro(u0, v0, u1, v1, alto, mat) {
+        colRect(x + u0, y + v0, x + u1, y + v1, alto);
         box(u0, v0, u1, v1, 0.12, 0.12 + alto, mat || mPared);
         tapa(u0, v0, u1, v1, alto);
       }
@@ -5527,11 +5699,22 @@ function buildScene(THREE, op) {
       const mv = (u, v0, v1, alto) => muro(u - 0.06, v0, u + 0.06, v1, alto || HT);
       /* cerramiento exterior, con el mismo panel que la fachada */
       function fachada(u0, v0, u1, v1, z0, z1) {
+        if (z0 < 1) colRect(x + u0, y + v0, x + u1, y + v1, alt);
         Bi(cajaUV(u1 - u0, z1 - z0, v1 - v0, matPanel, x + (u0 + u1) / 2, y + (v0 + v1) / 2,
           z0, 4.5, 4.4));
         if (z1 >= 0.12 + HM - 0.01) tapa(u0, v0, u1, v1, HM);
       }
       const T = 0.25, Z1 = 0.12 + HM;
+      /* A pie se entra en el edificio con la cubierta puesta: este friso cierra
+         la fachada desde el corte del interior hasta arriba. */
+      for (const [a, b, c, d] of [[0, 0, w, T], [0, h - T, w, h], [0, T, T, h - T],
+        [w - T, T, w, h - T]]) {
+        B('friso', cajaUV(c - a, 0.12 + alt - Z1, d - b, matPanel, x + (a + c) / 2,
+          y + (b + d) / 2, Z1, 4.5, 4.4));
+      }
+      const falso = caja(w - 2 * T, 0.06, h - 2 * T, M(0xeceae4, 0.95), x + w / 2, y + h / 2,
+        0.12 + alt - 0.1);
+      falso.castShadow = false; B('friso', falso);
       fachada(0, 0, 24.7, T, 0.12, Z1);
       fachada(29.3, 0, 31.4, T, 0.12, Z1); fachada(33.4, 0, w, T, 0.12, Z1);
       fachada(31.4, 0, 33.4, T, 2.45, Z1);            // dintel de la cafetería
@@ -5699,7 +5882,7 @@ function buildScene(THREE, op) {
       silla(13.5, 10.1, 'O', azul); silla(18.9, 10.1, 'E', azul);
       for (const v0 of [8.15, 10.25]) {                            // dos televisores de 65"
         box(19.96, v0, 20.03, v0 + 1.45, F + 1.15, F + 1.97, negro);
-        sinSombra(box(19.94, v0 + 0.03, 19.96, v0 + 1.42, F + 1.18, F + 1.94, matPantalla));
+        sinSombra(box(19.94, v0 + 0.03, 19.96, v0 + 1.42, F + 1.18, F + 1.94, matTele));
       }
       box(9.97, 9.3, 10.02, 11.9, F + 0.9, F + 2.15, blanco);      // pizarra táctica
       sinSombra(box(10.02, 9.55, 10.03, 11.65, F + 1.05, F + 2.0, M(0x2e8b57, 0.8)));
@@ -6148,6 +6331,7 @@ function buildScene(THREE, op) {
     }
     const malla = _mats.get(clave);
     const lista = cerrar ? pts.concat([pts[0]]) : pts;
+    for (let i = 0; i < lista.length - 1; i++) col(lista[i], lista[i + 1], 0.1, alt);
     for (let i = 0; i < lista.length - 1; i++) {
       const a = lista[i], b = lista[i + 1];
       const L = Math.hypot(b[0] - a[0], b[1] - a[1]);
@@ -6595,7 +6779,7 @@ function buildScene(THREE, op) {
     return persona(x, y, Object.assign({
       base: 0.17, cam, pan: 0x1f2730,
       mov: { t: 'jug', ax: amp * (0.6 + rnd() * 0.6), ay: amp * (0.6 + rnd() * 0.6),
-        w1: 0.5 + rnd() * 0.5, w2: 0.45 + rnd() * 0.5, f1: rnd() * 6.28, f2: rnd() * 6.28 },
+        w1: 0.8 + rnd() * 0.8, w2: 0.72 + rnd() * 0.8, f1: rnd() * 6.28, f2: rnd() * 6.28 },
     }, extra || {}));
   }
   function paseante(a, b, base) {
@@ -7096,6 +7280,7 @@ function buildScene(THREE, op) {
     for (const o of l) bloques[o.userData.bloque].add(o);
     for (const k in bloques) root.add(bloques[k]);
     bloques.interior.visible = false;
+    bloques.friso.visible = false;
   })();
   add(conos);
   add(nocturno);
@@ -7301,7 +7486,8 @@ function buildScene(THREE, op) {
     root, views, etiquetas, conos, cotas, rotulosCota, seguridad, rotulosSeg, calles,
     nocturno, sombras, emisivos,
     camaras: CAMARAS, torres, centros: CENTROS, mover: moverGente, bloques,
-    gente: { P, px, py },
+    gente: { P, px, py }, col: COL, marcadores, tele,
+    plano: { PARCELA, P1, C1, P2, C2, BC, BLOQ, GRADAS, EDIF, APAR },
   };
 }
 
@@ -7598,6 +7784,10 @@ function iniciarMaqueta() {
     document.body.classList.add('arrastrando');
     pararRecorrido();
     suave = 0.34;                       // con el dedo o el ratón, la cámara sigue al instante
+    if (fp.activa && e.pointerType === 'mouse' && e.button === 0) {
+      if (bloqueado()) cargar();
+      else fp.saltar = pedirRaton();
+    }
   });
   lienzo.addEventListener('pointermove', e => {
     const p = punteros.get(e.pointerId);
@@ -7606,7 +7796,8 @@ function iniciarMaqueta() {
     p.x = e.clientX; p.y = e.clientY;
     movido += Math.abs(dx) + Math.abs(dy);
     if (punteros.size === 1) {
-      if (pov.activa) mirarPOV(dx, dy);
+      if (fp.activa) { if (!bloqueado()) mirarAPie(-dx, -dy, 0.0042); }
+      else if (pov.activa) mirarPOV(dx, dy);
       else if (modoPan) pan(dx, dy);
       else {
         meta.theta -= dx * 0.005;
@@ -7616,21 +7807,41 @@ function iniciarMaqueta() {
     } else if (punteros.size === 2) {
       const v = [...punteros.values()];
       const d = Math.hypot(v[0].x - v[1].x, v[0].y - v[1].y);
-      if (prevDist) zoom(prevDist / d);
+      if (prevDist && !fp.activa) zoom(prevDist / d);
       prevDist = d;
     }
     pedir();
   });
   function soltar(e) {
+    const estaba = punteros.has(e.pointerId);
     punteros.delete(e.pointerId);
     if (punteros.size < 2) prevDist = 0;
     if (!punteros.size) document.body.classList.remove('arrastrando');
+    if (!estaba || e.type !== 'pointerup') return;
+    if (fp.activa) {
+      if (e.pointerType === 'mouse' && e.button === 0) {
+        if (fp.cargando) lanzar();
+        else if (!fp.saltar && movido < 6 && !bloqueado()) lanzar(0.5);
+        fp.saltar = false;
+      }
+      return;
+    }
+    if (pov.activa || movido > 6 || e.button > 0) return;
+    // una pulsación sin arrastrar: ¿hay un jugador debajo? Dos seguidas: a pie
+    if (elegirJugador(e.clientX, e.clientY)) return;
+    if (e.pointerType !== 'mouse') {
+      const ahora = performance.now();
+      if (ahora - toqueT < 330 && Math.hypot(e.clientX - toqueX, e.clientY - toqueY) < 34) {
+        toqueT = 0; bajarAPie(e.clientX, e.clientY);
+      } else { toqueT = ahora; toqueX = e.clientX; toqueY = e.clientY; }
+    }
   }
   lienzo.addEventListener('pointerup', soltar);
   lienzo.addEventListener('pointercancel', soltar);
   lienzo.addEventListener('contextmenu', e => e.preventDefault());
   lienzo.addEventListener('wheel', e => {
     e.preventDefault();
+    if (fp.activa) return;
     pararRecorrido();
     suave = 0.26;
     zoom(1 + Math.sign(e.deltaY) * 0.1);
@@ -7639,7 +7850,7 @@ function iniciarMaqueta() {
   function zoom(f) {
     if (pov.activa) meta.fov = Math.max(26, Math.min(92, meta.fov * f));
     else {
-      meta.radio = Math.max(9, Math.min(460, meta.radio * f));
+      meta.radio = Math.max(seg.i >= 0 ? 6 : 9, Math.min(460, meta.radio * f));
       vistaActual = null;
     }
   }
@@ -7662,6 +7873,8 @@ function iniciarMaqueta() {
     const n = camaras.length;
     i = (i + n) % n;
     const C = camaras[i];
+    if (fp.activa) salirAPie();
+    dejarDeSeguir();
     if (!pov.activa) pov.conosAntes = conos.visible;
     pov.activa = true; pov.i = i;
     pararRecorrido();
@@ -7738,6 +7951,8 @@ function iniciarMaqueta() {
   $('subPuntos').append(...RUTA.map(() => document.createElement('i')));
   function alternarRecorrido() {
     if (tour.activo) { pararRecorrido(); return; }
+    if (fp.activa) salirAPie();
+    dejarDeSeguir();
     if (pov.activa) salirPOV();
     cerrarFicha();
     tour.antes = { int: interior, cam: conos.visible, seg: seguridad.visible, hora: horaMeta };
@@ -7821,10 +8036,11 @@ function iniciarMaqueta() {
      línea de la cámara al rótulo atraviesa su volumen. */
   const EDI = { x0: 9, x1: 54, y0: 0, y1: 4.75, z0: -18.5, z1: -5 };
   function tapado(v) {
-    if (interior) return false;
+    if (interior || fp.dentro) return false;
     const o = cam.position;
     let t0 = 0, t1 = 0.985;
-    for (const [a, b, lo, hi] of [[o.x, v.x, EDI.x0, EDI.x1], [o.y, v.y, EDI.y0, EDI.y1],
+    // a pie la cubierta no se ve: lo que hay encima del edificio también queda tapado
+    for (const [a, b, lo, hi] of [[o.x, v.x, EDI.x0, EDI.x1], [o.y, v.y, EDI.y0, fp.activa ? 9 : EDI.y1],
       [o.z, v.z, EDI.z0, EDI.z1]]) {
       const d = b - a;
       if (Math.abs(d) < 1e-6) { if (a < lo || a > hi) return false; continue; }
@@ -7839,7 +8055,10 @@ function iniciarMaqueta() {
   function pintarEtiquetas() {
     const w = lienzo.clientWidth, h = lienzo.clientHeight;
     for (const n of nodos) {
-      const ver = !pov.activa && (n.grupo === 'etq' ? verEtiquetas && !interior && !seguridad.visible
+      const ver = fp.activa
+        ? (n.grupo === 'int' ? fp.dentro && n.v.distanceTo(cam.position) < 7.5
+          : n.grupo === 'etq' && !fp.dentro && verEtiquetas && n.v.distanceTo(cam.position) < 48)
+        : !pov.activa && (n.grupo === 'etq' ? verEtiquetas && !interior && !seguridad.visible
         : n.grupo === 'int' ? interior : n.grupo === 'seg' ? seguridad.visible
         : n.grupo === 'calle' ? (cotas.visible || seguridad.visible) && phi < 0.75
         : cotas.visible);
@@ -7854,7 +8073,7 @@ function iniciarMaqueta() {
           `${((-p.y * 0.5 + 0.5) * h).toFixed(1)}px)`;
       }
     }
-    $('aguja').style.transform = `rotate(${(theta / GRAD).toFixed(1)}deg)`;
+    $('aguja').style.transform = `rotate(${((fp.activa ? -fp.yaw : theta) / GRAD).toFixed(1)}deg)`;
   }
 
   /* ------------------------------------------------ seguimiento con IA
@@ -7926,6 +8145,7 @@ function iniciarMaqueta() {
     const f = etiquetas[i].f;
     fichaAbierta = i;
     pararRecorrido();
+    dejarDeSeguir();
     if (pov.activa) salirPOV();
     $('fTitulo').textContent = f.titulo;
     $('fSub').textContent = f.sub;
@@ -7937,9 +8157,10 @@ function iniciarMaqueta() {
       dl.append(dt, dd);
     }
     $('fCam').hidden = !f.camaras;
-    $('fInt').hidden = !f.interior || interior;
+    $('fInt').hidden = !f.interior || interior || fp.activa;
     $('ficha').hidden = false;
     nodos.forEach((n, k) => n.el.classList.toggle('sel', k === i));
+    if (fp.activa) return;              // a pie solo se enseña la ficha, sin volar
     marcarVista(null);
     irA({ cam: f.vista[0], mira: f.vista[1], fov: f.vista[2], cabe: f.vista[0][1] > 100 });
     if (f.camaras && !conos.visible) alternarCamaras(true);
@@ -7962,6 +8183,8 @@ function iniciarMaqueta() {
   function alternarInterior(v, sinVolar) {
     if (!sinVolar) {
       pararRecorrido();
+      if (fp.activa) salirAPie();
+      dejarDeSeguir();
       if (pov.activa) salirPOV();
     }
     if (v !== interior) {
@@ -7983,6 +8206,717 @@ function iniciarMaqueta() {
       if (!v) marcarVista(barra.children[0]);
     }
     pedir();
+  }
+
+  /* ================================================================ a pie
+     Primera persona. Se anda por la parcela a la altura de los ojos, se entra
+     en el edificio con la cubierta puesta y se puede lanzar a portería o a
+     canasta. Los obstáculos son los que devuelve la escena: vallas, muros,
+     gradas y edificios vecinos, cada uno como un segmento en planta. */
+  const PL = M.plano, COLS = M.col;
+  for (const c of COLS) {
+    c.x0 = Math.min(c.ax, c.bx) - c.r; c.x1 = Math.max(c.ax, c.bx) + c.r;
+    c.y0 = Math.min(c.ay, c.by) - c.r; c.y1 = Math.max(c.ay, c.by) + c.r;
+  }
+  const OJOS = 1.66, CUERPO = 0.3, SUELO = 0.13;
+  const fp = { activa: false, x: 36, y: -6, yaw: 0, pitch: 0, jx: 0, jy: 0, teclas: {},
+    paso: 0, carga: 0, cargando: false, zona: '', dentro: false, sinBloqueo: false, alto: 0,
+    saltar: false, canastas: 0, goles: 0 };
+  const limitar = (v, a, b) => v < a ? a : v > b ? b : v;
+  const bloqueado = () => document.pointerLockElement === lienzo;
+
+  function empujar(x, y, r, alto) {
+    for (let it = 0; it < 3; it++) {
+      let toca = false;
+      for (const c of COLS) {
+        if (c.h < alto || x < c.x0 - r || x > c.x1 + r || y < c.y0 - r || y > c.y1 + r) continue;
+        const dx = c.bx - c.ax, dy = c.by - c.ay, L2 = dx * dx + dy * dy;
+        let t = L2 ? ((x - c.ax) * dx + (y - c.ay) * dy) / L2 : 0;
+        t = t < 0 ? 0 : t > 1 ? 1 : t;
+        const ex = x - (c.ax + dx * t), ey = y - (c.ay + dy * t);
+        const m = r + c.r, d2 = ex * ex + ey * ey;
+        if (d2 >= m * m) continue;
+        const d = Math.sqrt(d2);
+        if (d < 1e-5) {
+          const L = Math.sqrt(L2) || 1;
+          x += -dy / L * m; y += dx / L * m;
+        } else { x += ex / d * (m - d); y += ey / d * (m - d); }
+        toca = true;
+      }
+      if (!toca) break;
+    }
+    return [x, y];
+  }
+
+  const enRect = (x, y, R) => x >= R.x && x <= R.x + R.w && y >= R.y && y <= R.y + R.h;
+  function enPoligono(x, y, pol) {
+    let d = false;
+    for (let i = 0, j = pol.length - 1; i < pol.length; j = i++) {
+      const a = pol[i], b = pol[j];
+      if ((a[1] > y) !== (b[1] > y) && x < (b[0] - a[0]) * (y - a[1]) / (b[1] - a[1]) + a[0]) d = !d;
+    }
+    return d;
+  }
+  function zonaDe(x, y) {
+    if (enRect(x, y, PL.EDIF)) {
+      // la misma distribución que dibuja la escena, en metros desde la esquina suroeste
+      const u = x - PL.EDIF.x, v = y - PL.EDIF.y;
+      if (u >= 29.6) return v < 7 && u < 37 ? 'Cafetería' : 'Sala polivalente';
+      if (v < 5.6) {
+        return u < 8.57 ? 'Vestuario masculino' : u < 17.14 ? 'Vestuario femenino'
+          : u < 20.35 ? 'Vestuario adaptado' : 'Vestíbulo';
+      }
+      if (v < 7.6) return u < 20.35 ? 'Pasillo de vestuarios' : 'Vestíbulo';
+      return u < 5.1 ? 'Almacén de material' : u < 7.5 ? 'Salida a las pistas'
+        : u < 9.9 ? 'Enfermería' : u < 20.1 ? 'Sala de análisis de vídeo'
+        : u < 22.15 ? 'Sala técnica' : 'Recepción y administración';
+    }
+    if (enRect(x, y, PL.P2)) return 'Pista 2';
+    if (enRect(x, y, PL.P1)) return 'Pista 1';
+    for (let k = 0; k < PL.BC.length; k++) if (enRect(x, y, PL.BC[k])) return 'Pista ' + (3 + k);
+    if (enRect(x, y, PL.BLOQ)) return 'Pistas de baloncesto';
+    for (const g of PL.GRADAS) if (enRect(x, y, { x: g.x, y: g.y, w: g.w, h: g.d })) return 'Graderío';
+    if (enPoligono(x, y, PL.APAR)) return 'Aparcamiento';
+    if (enPoligono(x, y, PL.PARCELA)) return y < 5 ? 'Plaza de acceso' : 'Tres Pistas Lab';
+    if (y > -9 && y <= 0 && x > 24 && x < 48) return 'Acceso principal';
+    if (y < 0 && x < 62) return 'Calle Demóstenes';
+    if (x < 0) return 'Avenida de Parménides';
+    if (y > 100) return 'Calle Píndaro';
+    return 'Calle Andrómeda';
+  }
+
+  /* A pie el edificio se enseña con su distribución interior y la cubierta
+     puesta, para poder cruzar la puerta y recorrer las salas. */
+  function edificioAPie(v) {
+    M.bloques.cuerpo.visible = !v;
+    M.bloques.interior.visible = v;
+    M.bloques.friso.visible = v;
+    M.bloques.techo.visible = true;
+    darGracia();
+    renderer.shadowMap.needsUpdate = true;
+  }
+
+  function entrarAPie(x, y, yaw, alto) {
+    pararRecorrido();
+    if (pov.activa) { pov.activa = false; salirPOVvisual(); }
+    dejarDeSeguir();
+    cerrarFicha();
+    if (interior) alternarInterior(false, true);
+    const p = alto ? [x, y] : empujar(x, y, CUERPO, 0);   // con altura: sentado en la grada
+    fp.x = p[0]; fp.y = p[1]; fp.alto = alto || 0;
+    fp.yaw = yaw === undefined ? Math.atan2(40 - fp.x, 50 - fp.y) : yaw;
+    fp.pitch = -0.03;
+    if (!fp.activa) {
+      fp.activa = true;
+      edificioAPie(true);
+      cam.near = 0.2; cam.far = 1500;
+      document.body.classList.add('apie');
+      $('apie').hidden = false;
+      $('filaPie').hidden = false;
+      $('bPie').classList.add('on');
+      $('bPie').setAttribute('aria-pressed', 'true');
+      marcarVista(null);
+      if (!animar) alternarAnimacion(true, true);
+      medirHud();
+    }
+    fp.zona = '';
+    sonar('lanzar', 0.4);
+    pedir();
+  }
+  function salirAPie() {
+    if (!fp.activa) return;
+    fp.activa = false;
+    fp.teclas = {}; fp.jx = fp.jy = 0; fp.cargando = false; fp.alto = 0;
+    acabarReto(true);
+    ambiente();
+    if (bloqueado() && document.exitPointerLock) document.exitPointerLock();
+    edificioAPie(false);
+    cam.near = 1; cam.far = 2600;
+    cam.rotation.order = 'XYZ';
+    document.body.classList.remove('apie');
+    $('apie').hidden = true;
+    $('filaPie').hidden = true;
+    $('bPie').classList.remove('on');
+    $('bPie').setAttribute('aria-pressed', 'false');
+    cerrarFicha();
+    // la órbita arranca en los ojos y se aleja hacia atrás
+    const fx = Math.sin(fp.yaw), fz = -Math.cos(fp.yaw);
+    obj.set(fp.x, SUELO + OJOS, -fp.y);
+    radio = 1.2; theta = meta.theta = -fp.yaw; phi = 1.5;
+    irA({ cam: [fp.x - fx * 32, 24, -fp.y - fz * 32], mira: [fp.x + fx * 5, 1, -fp.y + fz * 5],
+      fov: 42 });
+    medirHud();
+  }
+  function mirarAPie(dx, dy, k) {
+    fp.yaw += dx * k;
+    fp.pitch = limitar(fp.pitch - dy * k, -1.25, 1.25);
+    pedir();
+  }
+  function avanzarAPie(dt) {
+    const T = fp.teclas;
+    const av = (T.w || T.arrowup ? 1 : 0) - (T.s || T.arrowdown ? 1 : 0) - fp.jy;
+    const la = (T.d || T.arrowright ? 1 : 0) - (T.a || T.arrowleft ? 1 : 0) + fp.jx;
+    const n = Math.hypot(av, la), anda = n > 0.05;
+    if (anda) {
+      fp.alto = 0;                                  // al andar se baja de la grada
+      const k = (T.shift ? 7.6 : 4.2) * Math.min(1, n) / n * dt;
+      const s = Math.sin(fp.yaw), c = Math.cos(fp.yaw);
+      const p = empujar(fp.x + (s * av + c * la) * k, fp.y + (c * av - s * la) * k, CUERPO, 0);
+      fp.x = limitar(p[0], -64, 164); fp.y = limitar(p[1], -64, 164);
+      fp.paso += dt * (T.shift ? 13 : 9);
+    }
+    if (fp.cargando) {
+      fp.carga = Math.min(1, fp.carga + dt / 0.85);
+      $('pieFuerza').style.transform = 'scaleX(' + fp.carga.toFixed(3) + ')';
+    }
+    fp.dentro = enRect(fp.x, fp.y, PL.EDIF);
+    const z = zonaDe(fp.x, fp.y);
+    if (z !== fp.zona) { fp.zona = z; $('pieZona').textContent = z; }
+    pintarMini();
+    if (reto.activo) {
+      const sg = Math.ceil((reto.fin - performance.now()) / 1000);
+      if (sg !== reto.seg) { reto.seg = sg; if (sg <= 0) acabarReto(false); else tanteo(); }
+    }
+    ambiente();
+    return anda || fp.cargando || reto.activo;
+  }
+  function aplicarAPie() {
+    const asp = lienzo.clientWidth / Math.max(1, lienzo.clientHeight);
+    cam.position.set(fp.x, SUELO + OJOS + fp.alto + Math.sin(fp.paso) * 0.028, -fp.y);
+    cam.rotation.set(fp.pitch, -fp.yaw, 0, 'YXZ');
+    if (cam.view) cam.clearViewOffset();
+    cam.fov = asp >= 1.2 ? 68 : 80;
+    cam.updateProjectionMatrix();
+  }
+
+  /* ----------------------------------------------------- plano de situación */
+  const mini = $('mini'), mctx = mini.getContext('2d');
+  const MX0 = -9, MY0 = -8, MLADO = 117;
+  let miniBase = null;
+  function baseMini(px) {
+    const c = document.createElement('canvas');
+    c.width = c.height = px;
+    const g = c.getContext('2d'), k = px / MLADO;
+    const X = x => (x - MX0) * k, Y = y => px - (y - MY0) * k;
+    const pol = (pts, color) => {
+      g.beginPath();
+      pts.forEach((p, i) => (i ? g.lineTo(X(p[0]), Y(p[1])) : g.moveTo(X(p[0]), Y(p[1]))));
+      g.closePath(); g.fillStyle = color; g.fill();
+    };
+    const rec = (R, color, h) => { g.fillStyle = color; g.fillRect(X(R.x), Y(R.y + (h || R.h)), R.w * k, (h || R.h) * k); };
+    g.fillStyle = '#16233d'; g.fillRect(0, 0, px, px);
+    pol(PL.PARCELA, '#cfc9bb');
+    pol(PL.APAR, '#5a626c');
+    rec(PL.P1, '#b5543c'); rec(PL.P2, '#b5543c'); rec(PL.BLOQ, '#b5543c');
+    rec({ x: PL.C1.cx - 10, y: PL.C1.cy - 20, w: 20, h: 40 }, '#2f6fc0');
+    rec({ x: PL.C2.cx - 20, y: PL.C2.cy - 10, w: 40, h: 20 }, '#2f6fc0');
+    for (const b of PL.BC) rec(b, '#2f9a58');
+    for (const gr of PL.GRADAS) rec({ x: gr.x, y: gr.y, w: gr.w, h: gr.d }, '#e0641a');
+    rec(PL.EDIF, '#f4f1ea');
+    return c;
+  }
+  function pintarMini() {
+    const px = Math.round(mini.clientWidth * Math.min(devicePixelRatio || 1, 2));
+    if (!px) return;
+    if (mini.width !== px) { mini.width = mini.height = px; miniBase = baseMini(px); }
+    const k = px / MLADO;
+    mctx.drawImage(miniBase, 0, 0);
+    mctx.save();
+    mctx.translate((limitar(fp.x, MX0 + 2, MX0 + MLADO - 2) - MX0) * k,
+      px - (limitar(fp.y, MY0 + 2, MY0 + MLADO - 2) - MY0) * k);
+    mctx.rotate(fp.yaw);
+    const t = px * 0.055;
+    mctx.beginPath();
+    mctx.moveTo(0, -t * 1.5); mctx.lineTo(t, t); mctx.lineTo(0, t * 0.45); mctx.lineTo(-t, t);
+    mctx.closePath();
+    mctx.fillStyle = '#ff7a1a'; mctx.strokeStyle = '#fff'; mctx.lineWidth = Math.max(1.5, px * 0.012);
+    mctx.fill(); mctx.stroke();
+    mctx.restore();
+  }
+
+  /* ------------------------------------------------------------ sonido
+     Sintetizado en el momento, sin archivos: el bote, el aro, la red, el
+     silbato y la grada. Solo suena tras una acción de quien usa la maqueta. */
+  let audio = null, sonido = true;
+  function sonar(tipo, fuerza) {
+    if (!sonido) return;
+    try {
+      if (!audio) audio = new (window.AudioContext || window.webkitAudioContext)();
+      if (audio.state === 'suspended') audio.resume();
+    } catch (e) { sonido = false; return; }
+    const t = audio.currentTime, f = fuerza === undefined ? 1 : fuerza;
+    const gan = (v, d) => {
+      const g = audio.createGain();
+      g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(0.0008, t + d);
+      g.connect(audio.destination); return g;
+    };
+    const ruido = (d, tipoF, frec, v, q) => {
+      const n = Math.floor(audio.sampleRate * d), buf = audio.createBuffer(1, n, audio.sampleRate);
+      const a = buf.getChannelData(0);
+      for (let i = 0; i < n; i++) a[i] = Math.random() * 2 - 1;
+      const s = audio.createBufferSource(); s.buffer = buf;
+      const fl = audio.createBiquadFilter(); fl.type = tipoF; fl.frequency.value = frec; fl.Q.value = q || 0.8;
+      const g = audio.createGain();
+      g.gain.setValueAtTime(0.0008, t); g.gain.exponentialRampToValueAtTime(v, t + d * 0.18);
+      g.gain.exponentialRampToValueAtTime(0.0008, t + d);
+      s.connect(fl); fl.connect(g); g.connect(audio.destination); s.start(t);
+    };
+    const tono2 = (forma, f0, f1, d, v) => {
+      const o = audio.createOscillator(); o.type = forma;
+      o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + d);
+      o.connect(gan(v, d)); o.start(t); o.stop(t + d + 0.02);
+    };
+    if (tipo === 'bote') tono2('sine', 170, 62, 0.11, 0.5 * f);
+    else if (tipo === 'lanzar') ruido(0.16, 'bandpass', 700, 0.12, 0.6);
+    else if (tipo === 'tablero') tono2('triangle', 240, 120, 0.09, 0.35);
+    else if (tipo === 'aro') tono2('square', 880, 620, 0.12, 0.09);
+    else if (tipo === 'red') ruido(0.28, 'highpass', 3200, 0.22);
+    else if (tipo === 'silbato') { tono2('square', 2850, 2700, 0.42, 0.07); tono2('square', 3020, 2900, 0.42, 0.07); }
+    else if (tipo === 'grada') ruido(1.9, 'bandpass', 1100, 0.2, 0.5);
+    else if (tipo === 'zapatilla') tono2('sine', 2300, 3100, 0.07, 0.035 * f);
+  }
+
+  /* Fondo de pista mientras se anda: un murmullo que sube cerca de las pistas
+     y, de vez en cuando, un bote o el chirrido de una zapatilla. */
+  const amb = { g: null, f: null, sig: 0 };
+  function ambiente() {
+    const quiere = fp.activa && sonido && audio && audio.state === 'running';
+    if (!quiere) {
+      if (amb.g) amb.g.gain.setTargetAtTime(0.0001, audio.currentTime, 0.15);
+      return;
+    }
+    if (!amb.g) {
+      const n = audio.sampleRate * 3, buf = audio.createBuffer(1, n, audio.sampleRate);
+      const a = buf.getChannelData(0);
+      let ult = 0;
+      for (let i = 0; i < n; i++) { ult = (ult + 0.03 * (Math.random() * 2 - 1)) / 1.03; a[i] = ult * 3.2; }
+      const s = audio.createBufferSource(); s.buffer = buf; s.loop = true;
+      amb.f = audio.createBiquadFilter(); amb.f.type = 'bandpass'; amb.f.frequency.value = 520; amb.f.Q.value = 0.5;
+      amb.g = audio.createGain(); amb.g.gain.value = 0.0001;
+      s.connect(amb.f); amb.f.connect(amb.g); amb.g.connect(audio.destination); s.start();
+    }
+    let cerca = 1e9;
+    for (const c of M.centros) cerca = Math.min(cerca, Math.hypot(c[0] - fp.x, c[1] - fp.y));
+    const k = fp.dentro ? 0.12 : limitar(1.25 - cerca / 60, 0.2, 1);
+    amb.g.gain.setTargetAtTime(0.16 * k, audio.currentTime, 0.4);
+    const ahora = performance.now();
+    if (animar && !fp.dentro && cerca < 32 && ahora > amb.sig) {
+      amb.sig = ahora + 700 + Math.random() * 2600;
+      if (Math.random() < 0.7) sonar('bote', 0.16 * k); else sonar('zapatilla', 0.5 * k);
+    }
+  }
+
+  /* ------------------------------------------------------------ balones
+     Lo que se lanza a pie: bota en el suelo, rebota en vallas, muros, tableros
+     y aros, y cuenta cuando entra en una canasta o cruza la línea de gol. */
+  const balones = [];
+  const geoBal = new THREE.SphereGeometry(1, 20, 14);
+  const matCesta = new THREE.MeshStandardMaterial({ color: 0xd8641f, roughness: 0.82 });
+  const matMano = new THREE.MeshStandardMaterial({ color: 0xf4f2ea, roughness: 0.7 });
+  const ARO_R = 0.228, ARO_H = 0.14 + 3.05;
+  const AROS = [], TABLEROS = [];
+  for (const b of PL.BC) {
+    const cy = b.y + b.h / 2;
+    AROS.push({ x: b.x + 1.6, y: cy }, { x: b.x + b.w - 1.6, y: cy });
+    TABLEROS.push({ x: b.x + 1.3, y: cy }, { x: b.x + b.w - 1.3, y: cy });
+  }
+  const PORTERIAS = [
+    { eje: 'y', c: [PL.C1.cx, PL.C1.cy - 20], fuera: -1, pista: 0, lado: 'b' },
+    { eje: 'y', c: [PL.C1.cx, PL.C1.cy + 20], fuera: 1, pista: 0, lado: 'a' },
+    { eje: 'x', c: [PL.C2.cx - 20, PL.C2.cy], fuera: -1, pista: 1, lado: 'b' },
+    { eje: 'x', c: [PL.C2.cx + 20, PL.C2.cy], fuera: 1, pista: 1, lado: 'a' },
+  ];
+  function nuevoBalon(cesta) {
+    let b = balones.length >= 8 ? balones.shift() : null;
+    if (!b) {
+      b = { m: new THREE.Mesh(geoBal, matMano), p: new THREE.Vector3(), v: new THREE.Vector3() };
+      scene.add(b.m);
+    }
+    b.r = cesta ? 0.12 : 0.095; b.e = cesta ? 0.76 : 0.66;
+    b.m.material = cesta ? matCesta : matMano;
+    b.m.scale.setScalar(b.r);
+    b.t = 0; b.hecho = false; b.tocado = false; b.quieto = false; b.m.visible = true;
+    balones.push(b);
+    return b;
+  }
+  let avisoHasta = 0;
+  function avisar(txt) {
+    $('aviso').textContent = txt;
+    $('aviso').hidden = false;
+    avisoHasta = performance.now() + 1700;
+  }
+  /* Reto: cuántas canastas y goles caben en un minuto. La mejor marca se guarda
+     en el navegador de quien juega. */
+  const reto = { activo: false, fin: 0, puntos: 0, mejor: 0, seg: -1 };
+  try { reto.mejor = Number(localStorage.getItem('tpl-reto')) || 0; } catch (e) { reto.mejor = 0; }
+  function tanteo(acierto) {
+    if (reto.activo && acierto) reto.puntos++;
+    $('pieTanteo').hidden = false;
+    $('pieTanteo').textContent = reto.activo
+      ? 'Reto · ' + Math.max(0, reto.seg) + ' s · ' + reto.puntos + (reto.puntos === 1 ? ' acierto' : ' aciertos')
+      : 'Canastas ' + fp.canastas + ' · Goles ' + fp.goles
+        + (reto.mejor ? ' · mejor reto ' + reto.mejor : '');
+  }
+  function alternarReto() {
+    if (reto.activo) { acabarReto(true); return; }
+    reto.activo = true; reto.puntos = 0; reto.fin = performance.now() + 60000; reto.seg = 60;
+    $('bReto').classList.add('on'); $('bReto').textContent = 'Parar el reto';
+    avisar('¡60 segundos!'); sonar('silbato');
+    tanteo(); pedir();
+  }
+  function acabarReto(cortado) {
+    if (!reto.activo) return;
+    reto.activo = false;
+    $('bReto').classList.remove('on'); $('bReto').textContent = 'Reto de 60 s';
+    if (!cortado) {
+      const record = reto.puntos > reto.mejor;
+      if (record) { reto.mejor = reto.puntos; try { localStorage.setItem('tpl-reto', String(reto.mejor)); } catch (e) { /* sin almacenamiento */ } }
+      avisar(record ? '¡Nueva marca: ' + reto.puntos + '!' : 'Tiempo: ' + reto.puntos + (reto.puntos === 1 ? ' acierto' : ' aciertos'));
+      sonar('silbato'); if (record) sonar('grada');
+    }
+    tanteo();
+  }
+  function pasoBalon(b, h) {
+    const p = b.p, v = b.v, r = b.r;
+    const x0 = p.x, y0 = p.y, z0 = p.z;
+    v.y -= 9.81 * h;
+    p.addScaledVector(v, h);
+    if (p.y < SUELO + r) {                                  // suelo
+      p.y = SUELO + r;
+      if (v.y < -1.4) sonar('bote', Math.min(1, -v.y / 9));
+      v.y = -v.y * b.e; v.x *= 0.93; v.z *= 0.93;
+      if (v.y < 0.75) {
+        v.y = 0;
+        const f = Math.max(0, 1 - 1.6 * h);
+        v.x *= f; v.z *= f;
+        if (v.x * v.x + v.z * v.z < 0.012) { b.quieto = true; return; }
+      }
+    }
+    const px = p.x, py = -p.z;                              // vallas, muros y gradas
+    for (const c of COLS) {
+      if (c.h + SUELO < p.y - r || px < c.x0 - r || px > c.x1 + r || py < c.y0 - r || py > c.y1 + r) continue;
+      const dx = c.bx - c.ax, dy = c.by - c.ay, L2 = dx * dx + dy * dy;
+      let t = L2 ? ((px - c.ax) * dx + (py - c.ay) * dy) / L2 : 0;
+      t = t < 0 ? 0 : t > 1 ? 1 : t;
+      const qx = c.ax + dx * t, qy = c.ay + dy * t;
+      const ex = px - qx, ey = py - qy, m = r + c.r, d = Math.hypot(ex, ey);
+      if (d >= m || d < 1e-5) continue;
+      const nx = ex / d, ny = ey / d, vn = v.x * nx - v.z * ny;
+      p.x = qx + nx * m; p.z = -(qy + ny * m);
+      if (vn < 0) { v.x -= 1.4 * vn * nx; v.z += 1.4 * vn * ny; }
+    }
+    if (p.y < 2.2) {                                        // jugadores, árbitros y porteros
+      for (let i = 0; i < G.P.length; i++) {
+        const dx = p.x - G.px[i], dy = -p.z - G.py[i];
+        if (dx > 0.5 || dx < -0.5 || dy > 0.5 || dy < -0.5 || p.y > G.P[i].base + 1.85) continue;
+        const d = Math.hypot(dx, dy), m = r + 0.27;
+        if (d >= m || d < 1e-5) continue;
+        const nx = dx / d, ny = dy / d, vn = v.x * nx - v.z * ny;
+        p.x = G.px[i] + nx * m; p.z = -(G.py[i] + ny * m);
+        if (vn >= 0) continue;
+        v.x -= 1.35 * vn * nx; v.z += 1.35 * vn * ny;
+        if (vn < -3 && !b.tocado) {
+          b.tocado = true; sonar('tablero');
+          if (!b.hecho && PORTERIAS.some(g => Math.hypot(G.px[i] - g.c[0], G.py[i] - g.c[1]) < 4)) {
+            avisar('¡Parada!');
+          }
+        }
+      }
+    }
+    for (const t of TABLEROS) {                             // tableros
+      if (Math.abs(-p.z - t.y) > 0.9 || p.y < 3.03 || p.y > 4.09) continue;
+      const l0 = x0 - t.x, l1 = p.x - t.x;
+      if ((l0 > 0) === (l1 > 0) && Math.abs(l1) > r) continue;
+      const s = l0 >= 0 ? 1 : -1;
+      p.x = t.x + s * (r + 0.002);
+      if (v.x * s < 0) { v.x = -v.x * 0.62; sonar('tablero'); }
+    }
+    for (const a of AROS) {                                 // aros
+      const dx = p.x - a.x, dz = p.z + a.y, dh = Math.hypot(dx, dz);
+      if (dh > 0.6) continue;
+      if (!b.hecho && y0 >= ARO_H && p.y < ARO_H && dh < ARO_R - 0.015) {
+        b.hecho = true; v.x *= 0.3; v.z *= 0.3;
+        fp.canastas++; tanteo(true); avisar('¡Canasta!');
+        sonar('red'); sonar('grada');
+        continue;
+      }
+      const dy = p.y - ARO_H, rr = r * 0.72;
+      if (Math.abs(dy) > rr || dh < 1e-4) continue;
+      const cx = dx / dh * ARO_R, cz = dz / dh * ARO_R;
+      const ex = dx - cx, ez = dz - cz, d = Math.hypot(ex, dy, ez);
+      if (d >= rr || d < 1e-5) continue;
+      const nx = ex / d, ny = dy / d, nz = ez / d, vn = v.x * nx + v.y * ny + v.z * nz;
+      if (vn < 0) { v.x -= 1.55 * vn * nx; v.y -= 1.55 * vn * ny; v.z -= 1.55 * vn * nz; sonar('aro'); }
+      p.set(a.x + cx + nx * rr, ARO_H + ny * rr, -a.y + cz + nz * rr);
+    }
+    if (!b.hecho && p.y < SUELO + 2.0) {                    // porterías
+      for (const g of PORTERIAS) {
+        const enY = g.eje === 'y';
+        const a0 = enY ? -z0 : x0, a1 = enY ? -p.z : p.x, linea = enY ? g.c[1] : g.c[0];
+        const lat = enY ? p.x - g.c[0] : -p.z - g.c[1];
+        if ((a0 - linea) * g.fuera >= 0 || (a1 - linea) * g.fuera < 0 || Math.abs(lat) > 1.5) continue;
+        b.hecho = true; v.multiplyScalar(0.14);
+        fp.goles++; tanteo(true); avisar('¡Gol!');
+        const mk = M.marcadores[g.pista];
+        if (mk) mk.poner(mk.a + (g.lado === 'a' ? 1 : 0), mk.b + (g.lado === 'b' ? 1 : 0));
+        sonar('silbato'); sonar('grada');
+        break;
+      }
+    }
+  }
+  function moverBalones(dt) {
+    let vivos = false;
+    for (const b of balones) {
+      if (!b.m.visible) continue;
+      b.t += dt;
+      if (b.t > 18) { b.m.visible = false; continue; }
+      vivos = true;
+      if (b.quieto) continue;
+      const n = Math.max(1, Math.ceil(dt / 0.006)), h = dt / n;
+      for (let s = 0; s < n && !b.quieto; s++) pasoBalon(b, h);
+      b.m.position.copy(b.p);
+    }
+    return vivos;
+  }
+  function cargar() {
+    if (!fp.activa || fp.cargando) return;
+    fp.cargando = true; fp.carga = 0;
+    $('apie').classList.add('cargando');
+    pedir();
+  }
+  function lanzar(fuerza) {
+    if (!fp.activa) return;
+    const f = fuerza === undefined ? fp.carga : fuerza;
+    fp.cargando = false; fp.carga = 0;
+    $('apie').classList.remove('cargando');
+    $('pieFuerza').style.transform = 'scaleX(0)';
+    const cp = Math.cos(fp.pitch);
+    const d = new THREE.Vector3(Math.sin(fp.yaw) * cp, Math.sin(fp.pitch) + 0.18,
+      -Math.cos(fp.yaw) * cp).normalize();
+    const b = nuevoBalon(enRect(fp.x, fp.y, PL.BLOQ));
+    b.p.set(fp.x, SUELO + OJOS + fp.alto - 0.18, -fp.y).addScaledVector(d, 0.55);
+    b.v.copy(d).multiplyScalar(6.2 + 9.8 * f);
+    b.m.position.copy(b.p);
+    sonar('lanzar');
+    pedir();
+  }
+
+  /* ------------------------------------------------- analizar a un jugador
+     Al pulsar sobre un jugador la cámara lo sigue y se pintan su rastro, su
+     velocidad y la distancia que lleva recorrida: lo que el sistema saca del
+     vídeo sin sensores ni chalecos. Las cifras salen del propio movimiento. */
+  const seg = { i: -1, dist: 0, vmax: 0, v: 0, px: 0, py: 0, reloj: 0, huella: 0, desde: 0 };
+  const RASTRO = 110, rastro = [];
+  const matRastro = new THREE.MeshBasicMaterial({
+    color: 0xff7a1a, transparent: true, opacity: 0.9, depthWrite: false, fog: false,
+    polygonOffset: true, polygonOffsetFactor: -6, polygonOffsetUnits: -6,
+  });
+  const imRastro = new THREE.InstancedMesh(
+    new THREE.CircleGeometry(0.15, 12).rotateX(-Math.PI / 2), matRastro, RASTRO);
+  imRastro.frustumCulled = false; imRastro.visible = false; imRastro.count = 0;
+  const aroSeg = new THREE.Mesh(new THREE.RingGeometry(0.46, 0.6, 32).rotateX(-Math.PI / 2), matRastro);
+  aroSeg.visible = false;
+  scene.add(imRastro, aroSeg);
+  const mR = new THREE.Matrix4();
+  const es1 = n => n.toFixed(1).replace('.', ',');
+  function seguirJugador(i) {
+    pararRecorrido();
+    if (fp.activa) salirAPie();
+    if (pov.activa) salirPOV();
+    cerrarFicha();
+    const p = G.P[i];
+    seg.i = i; seg.dist = 0; seg.vmax = 0; seg.v = 0; seg.reloj = 0; seg.huella = 0;
+    seg.px = G.px[i]; seg.py = G.py[i]; seg.desde = performance.now();
+    rastro.length = 0; imRastro.count = 0;
+    imRastro.visible = aroSeg.visible = true;
+    $('jug').hidden = false;
+    $('jugNombre').textContent = 'Jugador ' + String(i % 97 + 1).padStart(2, '0');
+    $('jugPista').textContent = zonaDe(seg.px, seg.py);
+    $('jugColor').style.background = tono(p.cam);
+    marcarVista(null); vistaActual = null;
+    meta.radio = 19; meta.phi = limitar(meta.phi, 0.8, 1.12); meta.fov = 42;
+    if (!animar) alternarAnimacion(true, true);
+    suave = 0.09;
+    pedir();
+  }
+  function dejarDeSeguir() {
+    if (seg.i < 0) return;
+    seg.i = -1;
+    imRastro.visible = aroSeg.visible = false;
+    $('jug').hidden = true;
+    pedir();
+  }
+  function avanzarSeguimiento(dt) {
+    const i = seg.i, x = G.px[i], y = G.py[i], base = G.P[i].base;
+    if (dt > 0) {
+      const d = Math.hypot(x - seg.px, y - seg.py);
+      seg.dist += d;
+      seg.v += (d / dt - seg.v) * Math.min(1, dt * 5);
+      seg.vmax = Math.max(seg.vmax, seg.v);
+    }
+    seg.px = x; seg.py = y;
+    meta.obj.set(x, base + 1.0, -y);
+    aroSeg.position.set(x, base + 0.05, -y);
+    seg.huella += dt;
+    if (seg.huella > 0.14) {
+      seg.huella = 0;
+      rastro.push(x, base + 0.04, -y);
+      if (rastro.length > RASTRO * 3) rastro.splice(0, 3);
+      const n = rastro.length / 3;
+      for (let k = 0; k < n; k++) {
+        const e = 0.25 + 0.75 * (k + 1) / n;
+        mR.makeScale(e, 1, e).setPosition(rastro[k * 3], rastro[k * 3 + 1], rastro[k * 3 + 2]);
+        imRastro.setMatrixAt(k, mR);
+      }
+      imRastro.count = n;
+      imRastro.instanceMatrix.needsUpdate = true;
+    }
+    seg.reloj += dt;
+    if (seg.reloj > 0.2) {
+      seg.reloj = 0;
+      $('jugVel').textContent = es1(seg.v * 3.6);
+      $('jugMax').textContent = es1(seg.vmax * 3.6);
+      $('jugDist').textContent = Math.round(seg.dist);
+    }
+  }
+  function elegirJugador(cx, cy) {
+    const r = lienzo.getBoundingClientRect();
+    let mejor = -1, dm = 1e9;
+    for (let i = 0; i < G.P.length; i++) {
+      const p = G.P[i];
+      if (!p.mov || p.mov.t !== 'jug') continue;
+      pA.set(G.px[i], p.base + 0.95, -G.py[i]).project(cam);
+      pB.set(G.px[i], p.base + 1.85, -G.py[i]).project(cam);
+      if (pA.z > 1 || pB.z > 1) continue;
+      const x = (pA.x * 0.5 + 0.5) * r.width + r.left, y = (-pA.y * 0.5 + 0.5) * r.height + r.top;
+      const alto = Math.abs((pB.y - pA.y) * 0.5 * r.height) * 2;
+      const d = Math.hypot(x - cx, y - cy);
+      if (d < Math.max(13, alto * 0.75) && d < dm) { dm = d; mejor = i; }
+    }
+    if (mejor >= 0) seguirJugador(mejor);
+    return mejor >= 0;
+  }
+
+  /* Dos pulsaciones seguidas en el suelo: se baja a pie justo ahí. */
+  const rayo = new THREE.Raycaster();
+  const planoSuelo = new THREE.Plane(new THREE.Vector3(0, 1, 0), -SUELO);
+  const ndc = new THREE.Vector2(), pSuelo = new THREE.Vector3();
+  function bajarAPie(cx, cy) {
+    if (fp.activa || pov.activa || performance.now() - seg.desde < 450) return;
+    const r = lienzo.getBoundingClientRect();
+    ndc.set((cx - r.left) / r.width * 2 - 1, -((cy - r.top) / r.height) * 2 + 1);
+    rayo.setFromCamera(ndc, cam);
+    if (!rayo.ray.intersectPlane(planoSuelo, pSuelo)) return;
+    if (pSuelo.x < -60 || pSuelo.x > 160 || pSuelo.z < -160 || pSuelo.z > 60) return;
+    entrarAPie(pSuelo.x, -pSuelo.z, Math.atan2(pSuelo.x - cam.position.x, -(pSuelo.z - cam.position.z)));
+  }
+  lienzo.addEventListener('dblclick', e => bajarAPie(e.clientX, e.clientY));
+  let toqueT = 0, toqueX = 0, toqueY = 0;
+
+  /* ratón capturado, palanca táctil y botones del modo a pie */
+  document.addEventListener('mousemove', e => {
+    if (fp.activa && bloqueado()) mirarAPie(e.movementX || 0, e.movementY || 0, 0.0022);
+  });
+  document.addEventListener('pointerlockchange', () => {
+    document.body.classList.toggle('raton', bloqueado());
+    if (!bloqueado()) { fp.cargando = false; $('apie').classList.remove('cargando'); }
+  });
+  document.addEventListener('pointerlockerror', () => { fp.sinBloqueo = true; });
+  function pedirRaton() {
+    if (fp.sinBloqueo || !lienzo.requestPointerLock) { fp.sinBloqueo = true; return false; }
+    try {
+      const r = lienzo.requestPointerLock();
+      if (r && r.catch) r.catch(() => { fp.sinBloqueo = true; });
+    } catch (e) { fp.sinBloqueo = true; return false; }
+    return true;
+  }
+  const joy = $('joy'), joyP = joy.firstElementChild;
+  let joyId = null;
+  function moverJoy(e) {
+    const r = joy.getBoundingClientRect(), R = r.width / 2;
+    let dx = (e.clientX - r.left - R) / R, dy = (e.clientY - r.top - R) / R;
+    const n = Math.hypot(dx, dy);
+    if (n > 1) { dx /= n; dy /= n; }
+    fp.jx = dx; fp.jy = dy;
+    joyP.style.transform = `translate(${(dx * R * 0.55).toFixed(1)}px, ${(dy * R * 0.55).toFixed(1)}px)`;
+    pedir();
+  }
+  joy.addEventListener('pointerdown', e => {
+    joyId = e.pointerId; joy.setPointerCapture(e.pointerId); moverJoy(e); e.preventDefault();
+  });
+  joy.addEventListener('pointermove', e => { if (e.pointerId === joyId) moverJoy(e); });
+  const soltarJoy = e => {
+    if (e.pointerId !== joyId) return;
+    joyId = null; fp.jx = fp.jy = 0; joyP.style.transform = '';
+  };
+  joy.addEventListener('pointerup', soltarJoy);
+  joy.addEventListener('pointercancel', soltarJoy);
+  $('bLanzar').addEventListener('pointerdown', e => { e.preventDefault(); cargar(); });
+  $('bLanzar').addEventListener('pointerup', () => { if (fp.cargando) lanzar(); });
+  $('bLanzar').addEventListener('pointercancel', () => { fp.cargando = false; });
+  $('bPie').onclick = () => (fp.activa ? salirAPie() : entrarAPie(36, -6, 0));
+  $('pieSalir').onclick = salirAPie;
+  $('bReto').onclick = alternarReto;
+  $('jugCerrar').onclick = dejarDeSeguir;
+  $('bSon').onclick = () => {
+    sonido = !sonido;
+    $('bSon').classList.toggle('on', sonido);
+    $('bSon').setAttribute('aria-pressed', String(sonido));
+    if (sonido) sonar('bote', 0.5);
+    ambiente();
+  };
+  const LUGARES = [
+    ['Entrada', 36, -6, 0], ['Vestíbulo', 36, 8.2, 0], ['Sala de análisis', 28.2, 13.5, -1.2],
+    ['Pista 2', 41, 34.25, 1.5708], ['Pista 1', 15, 79, 0], ['Baloncesto', 51.6, 70, 1.5708],
+    ['Grada', 31.5, 21.1, 0, 1.3], ['Cafetería', 44, 1.6, 0.25], ['Aparcamiento', 78, 60, -1.5708],
+  ];
+  for (const [n, x, y, yaw, alto] of LUGARES) {
+    const b = document.createElement('button');
+    b.type = 'button'; b.textContent = n;
+    b.onclick = () => entrarAPie(x, y, yaw, alto);
+    $('pieLugares').appendChild(b);
+  }
+  /* la ficha del rótulo que queda más cerca del centro de la mirada */
+  function fichaCercana() {
+    const w = lienzo.clientWidth, h = lienzo.clientHeight;
+    let mejor = -1, dm = Math.min(w, h) * 0.34;
+    nodos.forEach((n, k) => {
+      if (k >= etiquetas.length || n.el.hidden || n.el.classList.contains('tapada')) return;
+      const p = pTmp.copy(n.v).project(cam);
+      const d = Math.hypot(p.x * 0.5 * w, p.y * 0.5 * h);
+      if (d < dm) { dm = d; mejor = k; }
+    });
+    if (mejor >= 0) abrirFicha(mejor); else cerrarFicha();
+  }
+
+  /* ------------------------------------------- televisores de la sala de análisis
+     Enseñan en directo lo que ve una cámara de pista, y cambian de cámara cada
+     pocos segundos. Solo se pintan cuando se está dentro del edificio. */
+  const teleV = { rt: null, cam: new THREE.PerspectiveCamera(60, 16 / 9, 1, 900), k: 0, cambio: 0,
+    turno: 0, lista: camaras.map((c, i) => i).filter(i => /Pista [12]/.test(camaras[i].n)) };
+  if (!teleV.lista.length) teleV.lista = [0];
+  const vTele = new THREE.Vector3();
+  function pintarTele(ahora) {
+    if (!M.tele.mat) return;
+    if ((teleV.turno++ % 3) && teleV.rt) return;
+    if (!teleV.rt) {
+      teleV.rt = new THREE.WebGLRenderTarget(640, 360);
+      M.tele.mat.map = teleV.rt.texture;
+      M.tele.mat.color.set(0xffffff);
+      M.tele.mat.needsUpdate = true;
+    }
+    if (ahora > teleV.cambio) { teleV.cambio = ahora + 6000; teleV.k = (teleV.k + 1) % teleV.lista.length; }
+    const C = camaras[teleV.lista[teleV.k]];
+    teleV.cam.position.copy(C.pos); teleV.cam.position.y += 0.36;
+    vTele.copy(C.obj).sub(teleV.cam.position).normalize();
+    teleV.cam.position.addScaledVector(vTele, 1.2);
+    teleV.cam.lookAt(C.obj.x, C.obj.y - 0.6, C.obj.z);
+    const cv = conos.visible, sv = seguridad.visible, kv = cotas.visible;
+    conos.visible = seguridad.visible = cotas.visible = false;
+    renderer.setRenderTarget(teleV.rt);
+    renderer.render(scene, teleV.cam);
+    renderer.setRenderTarget(null);
+    conos.visible = cv; seguridad.visible = sv; cotas.visible = kv;
   }
 
   /* ------------------------------------------------------ bucle y medidas */
@@ -8094,6 +9028,7 @@ function iniciarMaqueta() {
     // un equipo rápido que en uno lento
     const paso = f => 1 - Math.pow(1 - f, dtReal * 60);
     if (tour.activo) avanzarRecorrido(ahora, dtReal);
+    if (fp.activa) meta.fov = cam.fov;
 
     if (Math.abs(horaMeta - hora) > 0.004) {
       ponerHora(hora + (horaMeta - hora) * paso(0.09));
@@ -8118,11 +9053,16 @@ function iniciarMaqueta() {
     if (animar) {
       tAnim += dts;
       M.mover(tAnim, true);
+      if (seg.i >= 0) avanzarSeguimiento(dts);
       uCielo.uT.value = tAnim;
       pedido = true;
     }
+    if (fp.activa && avanzarAPie(dtReal)) pedido = true;
+    if (balones.length && moverBalones(dts)) pedido = true;
+    if (avisoHasta && ahora > avisoHasta) { avisoHasta = 0; $('aviso').hidden = true; }
     if (!pedido) { parado = true; return; }
-    aplicar();
+    if (fp.activa) aplicarAPie(); else aplicar();
+    if (fp.activa ? fp.dentro : interior && radio < 46) pintarTele(ahora);
     renderer.render(scene, cam);
     pintarEtiquetas();
     if (pov.activa) pintarSeguimiento(); else if (trkSucio) limpiarSeguimiento();
@@ -8144,6 +9084,8 @@ function iniciarMaqueta() {
     b.textContent = NOMBRES[v.nombre] || v.nombre;
     b.onclick = () => {
       pararRecorrido();
+      if (fp.activa) salirAPie();
+      dejarDeSeguir();
       if (pov.activa) { pov.activa = false; salirPOVvisual(); }
       if (interior) alternarInterior(false, true);
       marcarVista(b);
@@ -8201,6 +9143,8 @@ function iniciarMaqueta() {
     const v = !seguridad.visible;
     alternarSeguridad(v);
     if (v && !tour.activo) {
+      if (fp.activa) salirAPie();
+      dejarDeSeguir();
       if (pov.activa) salirPOV();
       if (interior) alternarInterior(false, true);
       marcarVista(null);
@@ -8257,8 +9201,25 @@ function iniciarMaqueta() {
   addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       if (!$('ayuda').hidden) { alternarAyuda(false); return; }
+      if (fp.activa) { if (!$('ficha').hidden) cerrarFicha(); else salirAPie(); return; }
+      if (seg.i >= 0) { dejarDeSeguir(); return; }
       if (pov.activa) salirPOV(); else cerrarFicha();
       pararRecorrido();
+      return;
+    }
+    if (fp.activa) {
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      const t = e.key.toLowerCase();
+      if (t === ' ') { if (!e.repeat) cargar(); e.preventDefault(); return; }
+      if (t === 'e') { if (!e.repeat) fichaCercana(); return; }
+      if (t === 'v') { salirAPie(); return; }
+      if (t === 'n') {
+        if (horaMeta >= 20.4) horaMeta = nocheAntes; else { nocheAntes = horaMeta; horaMeta = 22; }
+        pedir(); return;
+      }
+      if (/^(w|a|s|d|shift|arrowup|arrowdown|arrowleft|arrowright)$/.test(t)) {
+        fp.teclas[t] = true; e.preventDefault(); pedir();
+      }
       return;
     }
     if (pov.activa && e.key === 'ArrowRight') { verCamara(pov.i + 1); return; }
@@ -8273,13 +9234,20 @@ function iniciarMaqueta() {
       return;
     }
     const atajos = { r: 'bRuta', f: 'bEtq', m: 'bCota', c: 'bCam', i: 'bInt', e: 'bSeg',
-      p: 'bAnim', '?': 'bAyuda', h: 'bAyuda' };
+      p: 'bAnim', v: 'bPie', '?': 'bAyuda', h: 'bAyuda' };
     if (atajos[k]) { $(atajos[k]).click(); e.preventDefault(); return; }
     if (k === 'n') {
       if (horaMeta >= 20.4) horaMeta = nocheAntes; else { nocheAntes = horaMeta; horaMeta = 22; }
       pedir();
     }
   });
+
+  addEventListener('keyup', e => {
+    const t = e.key.toLowerCase();
+    fp.teclas[t] = false;
+    if (t === ' ' && fp.cargando) lanzar();
+  });
+  addEventListener('blur', () => { fp.teclas = {}; fp.jx = fp.jy = 0; });
 
   /* ------------------------------------------------- enlaces directos
      La dirección admite un nombre tras la almohadilla, para abrir la maqueta
@@ -8295,6 +9263,7 @@ function iniciarMaqueta() {
     noche: () => { horaMeta = 22; pedir(); },
     atardecer: () => { horaMeta = 20.2; pedir(); },
     recorrido: () => { if (!tour.activo) alternarRecorrido(); },
+    apie: () => { if (!fp.activa) entrarAPie(36, -6, 0); },
   };
   function seguirEnlace() {
     let n = '';
@@ -8324,7 +9293,10 @@ function iniciarMaqueta() {
   window.__maqueta = { renderer, scene, cam, irA, ponerHora, verCamara, M,
     calidad: () => ({ escala: +escalaPx.toFixed(2), media: +media.toFixed(1), techo }),
     fijarHora: h => { horaMeta = h; ponerHora(h); $('hora').value = h; },
-    alternarSeguridad, alternarRecorrido };
+    alternarSeguridad, alternarRecorrido, entrarAPie, salirAPie, lanzar, cargar, fp,
+    seguirJugador, dejarDeSeguir, seg, edificioAPie, balones, empujar, zonaDe,
+    moverBalones, avanzarSeguimiento, rehacerEntorno, alternarCamaras, pintarTele, reto,
+    alternarReto };
 }
 
 /* Los rótulos se dibujan con la tipografía de la marca: se espera a que
