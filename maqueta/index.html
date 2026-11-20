@@ -5319,8 +5319,13 @@ function buildScene(THREE, op) {
     poste.position.set(0, 1.7, -1.4); poste.castShadow = true;
     const acolchado = new THREE.Mesh(new THREE.BoxGeometry(0.34, 1.9, 0.34), M(AZU, 0.85));
     acolchado.position.set(0, 1.1, -1.4); acolchado.castShadow = true;
-    const brazo = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.16, 1.9), mt);
-    brazo.position.set(0, 3.42, -0.55); brazo.rotation.x = -0.16; brazo.castShadow = true;
+    // el brazo va del poste a la cara trasera del tablero y no lo atraviesa
+    const brazo = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.16, 1.49), mt);
+    brazo.position.set(0, 3.42, -0.705); brazo.castShadow = true;
+    const placa = new THREE.Mesh(new THREE.BoxGeometry(0.56, 0.42, 0.04), mt);
+    placa.position.set(0, 3.42, 0.055);
+    const tirante = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.08, 1.2), mt);
+    tirante.position.set(0, 3.06, -0.84); tirante.rotation.x = -0.52; tirante.castShadow = true;
     const tab = new THREE.Mesh(new THREE.BoxGeometry(1.8, 1.05, 0.05), matTablero);
     tab.position.set(0, 3.42, 0.1); tab.castShadow = true;
     const aro = new THREE.Mesh(new THREE.TorusGeometry(0.228, 0.02, 8, 22),
@@ -5329,7 +5334,7 @@ function buildScene(THREE, op) {
     const red = new THREE.Mesh(
       uvEsc(new THREE.CylinderGeometry(0.225, 0.14, 0.42, 14, 1, true), 6, 2), matRed);
     red.position.set(0, 2.84, 0.4);
-    g.add(base, poste, acolchado, brazo, tab, aro, red);
+    g.add(base, poste, acolchado, brazo, placa, tirante, tab, aro, red);
     colLoc(cx, cy, rotY, [0, -0.95], [0, -2.15], 0.45, 3.5);
     g.position.set(cx, 0.14, -cy);
     g.rotation.y = rotY;
